@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIN-project</title>
+<style>
+  :root{
+    --night-0:#070b13; --night-1:#0e1523; --night-2:#18202f;
+    --beam:#ffe6a8; --beam-warm:#f4d58d;
+    --ink:#e8ecf3; --ink-dim:#8a94a8; --ink-faint:#4a5674;
+    --diary:#c25454; --tools:#c2872f; --paint:#3a8570; --plush:#c46a8c; --letter:#e6ddcb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--night-0);font-family:"Georgia","Songti SC",serif;color:var(--ink)}
+  #stage{position:fixed;inset:0;cursor:none;touch-action:none}
+
+  /* 雨夜底层 */
+  .backdrop{position:absolute;inset:0;background:
+    radial-gradient(140% 90% at 50% 0%, #111a2b 0%, #0a1018 55%, #060a11 100%);}
+  .wetfloor{position:absolute;left:0;right:0;bottom:0;height:26%;
+    background:linear-gradient(#0a0f18,#05080e);opacity:.9}
+  .rain{position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:repeating-linear-gradient(105deg,transparent 0 22px, rgba(150,170,200,.18) 22px 23px);
+    animation:rain .5s linear infinite}
+  @keyframes rain{to{background-position:60px 260px}}
+  .rain.close{opacity:.35;background-image:repeating-linear-gradient(102deg,transparent 0 46px, rgba(180,200,230,.28) 46px 48px);
+    animation-duration:.32s}
+
+  /* 由物件构成的人形——全部藏在暗处,靠光柱照亮 */
+  .figure{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);width:300px;height:440px}
+  .obj{position:absolute;filter:brightness(.14) saturate(.4);transition:filter .35s ease}
+  .obj .cap{position:absolute;left:50%;top:100%;transform:translateX(-50%) translateY(6px);
+    white-space:nowrap;font-size:13px;letter-spacing:.06em;color:var(--ink-dim);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;font-family:system-ui,sans-serif}
+  .obj.lit{filter:brightness(1) saturate(1) drop-shadow(0 0 14px rgba(255,230,168,.35));cursor:pointer}
+  .obj.lit .cap{opacity:1}
+
+  .head{left:120px;top:0;width:60px;height:60px;border-radius:50%;background:#241d30}
+  .diary{left:96px;top:70px;width:108px;height:76px;background:var(--diary);border-radius:5px;
+    box-shadow:inset 14px 0 0 rgba(0,0,0,.35), inset 0 0 0 1.5px rgba(255,200,200,.3)}
+  .tools{left:56px;top:170px;width:96px;height:70px;background:var(--tools);border-radius:8px;
+    box-shadow:inset 0 14px 0 rgba(0,0,0,.28), inset 0 0 0 1.5px rgba(255,220,140,.35)}
+  .paint{left:158px;top:168px;width:100px;height:74px;background:var(--paint);border:5px solid #d8c088;border-radius:3px}
+  .paint::before{content:"";position:absolute;left:14px;top:14px;width:16px;height:16px;border-radius:50%;background:var(--beam)}
+  .paint::after{content:"";position:absolute;left:6px;bottom:8px;border-left:34px solid transparent;border-right:24px solid transparent;border-bottom:34px solid #1d4a3c}
+  .plush{left:64px;top:280px;width:78px;height:78px;border-radius:50%;background:var(--plush);
+    box-shadow:inset 0 0 0 1.5px rgba(255,200,220,.4)}
+  .plush::before,.plush::after{content:"";position:absolute;top:28px;width:9px;height:9px;border-radius:50%;background:#221018}
+  .plush::before{left:24px}.plush::after{right:24px}
+  .letter{left:150px;top:288px;width:104px;height:66px;background:var(--letter);border-radius:3px;
+    box-shadow:inset 0 0 0 1.5px rgba(160,150,120,.5)}
+  .letter::before{content:"";position:absolute;inset:0;background:
+    linear-gradient(135deg,transparent 46%,rgba(120,110,90,.45) 47% 49%,transparent 50%),
+    linear-gradient(-135deg,transparent 46%,rgba(120,110,90,.45) 47% 49%,transparent 50%)}
+  .coat{left:78px;top:352px;width:150px;height:88px;background:#141c2c;border-radius:40px 40px 8px 8px;opacity:.55}
+
+  /* 手电筒光罩:全屏暗幕,光标处抠出柔光圈 */
+  .veil{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle var(--r,150px) at var(--x,50%) var(--y,50%),
+      transparent 0%, transparent 32%, rgba(6,9,17,.55) 62%, rgba(6,9,17,.94) 100%);
+    transition:background .05s linear}
+  .glow{position:absolute;width:340px;height:340px;left:var(--gx,-999px);top:var(--gy,-999px);
+    transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen;
+    background:radial-gradient(circle,rgba(255,230,168,.28) 0%,rgba(244,213,141,.08) 40%,transparent 70%)}
+
+  /* 顶栏:导航 + skip 始终清晰 */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
+    justify-content:space-between;padding:22px 34px;cursor:auto}
+  .brand{font:500 21px/1 Georgia,"Times New Roman",serif;letter-spacing:.22em;color:var(--ink);text-shadow:0 0 18px rgba(255,230,168,.28)}
+  .nav{display:flex;gap:30px;font-family:system-ui,sans-serif;font-size:14px;letter-spacing:.04em}
+  .nav a{color:var(--ink-dim);text-decoration:none;transition:color .2s;padding-bottom:3px;border-bottom:1px solid transparent}
+  .nav a:hover{color:var(--ink);border-bottom-color:var(--beam-warm)}
+  .langs{display:flex;align-items:center;gap:9px;border-left:1px solid rgba(255,255,255,.16);padding-left:24px}
+  .lang{appearance:none;border:0;background:transparent;color:var(--ink-faint);font:inherit;
+    font-size:12px;letter-spacing:.04em;cursor:pointer;transition:color .2s}
+  .lang:hover,.lang.active{color:var(--beam)}
+  .lang + .lang::before{content:"/";color:rgba(255,255,255,.18);margin-right:9px;pointer-events:none}
+  .skip{font-family:system-ui,sans-serif;font-size:13px;letter-spacing:.05em;color:var(--night-0);
+    background:var(--beam-warm);border:none;border-radius:2px;padding:9px 18px;cursor:pointer;
+    transition:transform .15s, background .2s}
+  .skip:hover{background:var(--beam);transform:translateY(-1px)}
+  .skip-wrap{position:relative}
+  .skip-menu{position:absolute;right:0;top:46px;width:190px;padding:8px;background:rgba(9,13,21,.94);
+    border:1px solid rgba(255,230,168,.2);border-radius:4px;box-shadow:0 18px 55px rgba(0,0,0,.45);
+    backdrop-filter:blur(12px);opacity:0;visibility:hidden;transform:translateY(-7px);transition:.18s ease}
+  .skip-wrap.open .skip-menu{opacity:1;visibility:visible;transform:none}
+  .skip-menu a{display:flex;justify-content:space-between;color:var(--ink-dim);text-decoration:none;
+    padding:10px 11px;font:12px system-ui,sans-serif;letter-spacing:.04em;border-radius:2px}
+  .skip-menu a::after{content:"→";color:var(--ink-faint)}
+  .skip-menu a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+
+  /* 提示语 */
+  .hint{position:fixed;left:50%;bottom:38px;transform:translateX(-50%);z-index:15;
+    font-family:system-ui,sans-serif;font-size:13px;letter-spacing:.14em;color:var(--ink-faint);
+    text-align:center;pointer-events:none;transition:opacity .6s}
+  .hint b{color:var(--ink-dim);font-weight:400}
+
+  @media (max-width:640px){
+    .nav{display:none}.figure{transform:translate(-50%,-46%) scale(.82)}
+    .brand{font-size:19px;letter-spacing:.18em}.topbar{padding:16px 18px}
+  }
+
+  /* 生成素材接入：背景板 + 暗影层 + 手电筒揭示层 */
+  .backdrop{
+    background:#050505 url("portfolio-hero-assets/rainy-background.png") center/cover no-repeat;
+  }
+  .wetfloor{display:none}
+  .rain{opacity:.14;mix-blend-mode:screen}
+  .rain.close{opacity:.08}
+  .figure{display:none}
+  .figure-frame{position:fixed;left:50%;top:53%;width:min(980px,72vw);aspect-ratio:1672/941;
+    transform:translate(-50%,-50%);pointer-events:auto}
+  .figure-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;
+    mix-blend-mode:screen}
+  .figure-shadow{
+    opacity:.68;filter:brightness(.40) saturate(.38) contrast(1.12) blur(.2px);
+    -webkit-mask-image:radial-gradient(ellipse 34% 88% at 50% 50%,#000 0 58%,rgba(0,0,0,.92) 70%,rgba(0,0,0,.35) 87%,transparent 100%);
+    mask-image:radial-gradient(ellipse 34% 88% at 50% 50%,#000 0 58%,rgba(0,0,0,.92) 70%,rgba(0,0,0,.35) 87%,transparent 100%);
+  }
+  /* 先把原图矩形画布的四周柔化，再在内部移动手电筒；避免黑底边缘被照亮 */
+  .figure-cutout{position:absolute;inset:0;pointer-events:none;
+    -webkit-mask-image:radial-gradient(ellipse 34% 96% at 50% 51%,#000 0 80%,rgba(0,0,0,.92) 86%,rgba(0,0,0,.42) 93%,transparent 100%);
+    mask-image:radial-gradient(ellipse 34% 96% at 50% 51%,#000 0 80%,rgba(0,0,0,.92) 86%,rgba(0,0,0,.42) 93%,transparent 100%);
+  }
+  .figure-reveal{
+    opacity:.96;filter:brightness(1.02) saturate(.82) contrast(1.08);
+    -webkit-mask-image:radial-gradient(circle 165px at var(--lx,50%) var(--ly,50%),#000 0 48%,rgba(0,0,0,.9) 60%,transparent 78%);
+    mask-image:radial-gradient(circle 165px at var(--lx,50%) var(--ly,50%),#000 0 48%,rgba(0,0,0,.9) 60%,transparent 78%);
+  }
+  .hotspots{position:absolute;inset:0;pointer-events:none}
+  .hotspots .obj{
+    display:block;background:transparent!important;box-shadow:none!important;border:0!important;
+    filter:none;pointer-events:auto;cursor:pointer;border-radius:12px!important;
+  }
+  .hotspots .obj::before,.hotspots .obj::after{display:none!important}
+  .marker{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;
+    transform:translate(-50%,-50%) scale(.4);opacity:0;background:#ffe0a0;
+    box-shadow:0 0 0 5px rgba(255,224,160,.12),0 0 22px 8px rgba(255,196,92,.6);
+    transition:opacity .16s ease,transform .2s ease}
+  .hotspots .obj.lit .marker{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .hotspots .obj .cap{
+    top:auto;bottom:-30px;padding:6px 9px;border:1px solid rgba(255,230,168,.24);
+    border-radius:3px;background:rgba(18,14,10,.9);color:#f0dfbd;backdrop-filter:blur(7px);
+    font:500 13px/1.2 system-ui,sans-serif;cursor:pointer;pointer-events:none;
+    box-shadow:0 8px 30px rgba(0,0,0,.35)
+  }
+  .hotspots .obj.lit .cap{pointer-events:auto}
+  .hotspots .obj.lit .cap:hover{background:#e8c77f;color:#17120c;border-color:#f5dda9}
+  .veil{
+    background:radial-gradient(circle var(--r,150px) at var(--x,50%) var(--y,50%),
+      transparent 0%,transparent 32%,rgba(6,9,17,.34) 62%,rgba(6,9,17,.72) 100%);
+  }
+  .hotspots .diary{left:45.6%;top:25.5%;width:9%;height:19%}
+  .hotspots .tools{left:52.2%;top:28%;width:9.5%;height:26%}
+  .hotspots .paint{left:45.5%;top:44.5%;width:9%;height:18.5%}
+  .hotspots .plush{left:40.5%;top:31%;width:7.5%;height:18%}
+  .hotspots .letter{left:41.5%;top:54%;width:16.5%;height:17%}
+  @media(max-width:640px){
+    .figure-frame{left:50%;width:175vw}
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="backdrop"></div>
+  <div class="wetfloor"></div>
+  <div class="rain"></div>
+  <div class="rain close"></div>
+
+  <div class="figure-frame" id="figureFrame">
+    <img class="figure-art figure-shadow" src="portfolio-hero-assets/figure-reveal-transparent.png" alt="">
+    <div class="figure-cutout">
+      <img class="figure-art figure-reveal" id="figureReveal" src="portfolio-hero-assets/figure-reveal-transparent.png" alt="由日记、工具、画作、玩偶与信件构成的人形">
+    </div>
+    <div class="hotspots">
+      <div class="obj diary" data-k="diary" data-href="experience.html"><i class="marker"></i><button class="cap" type="button">日记 · 我的经历 →</button></div>
+      <div class="obj tools" data-k="tools" data-href="#skills"><i class="marker"></i><button class="cap" type="button">工具箱 · 我的技能 →</button></div>
+      <div class="obj paint" data-k="paint" data-href="selected-work.html"><i class="marker"></i><button class="cap" type="button">油画 · 我的设计 →</button></div>
+      <div class="obj plush" data-k="plush" data-href="#likes"><i class="marker"></i><button class="cap" type="button">玩偶 · 我喜欢的 →</button></div>
+      <div class="obj letter" data-k="letter" data-href="#thoughts"><i class="marker"></i><button class="cap" type="button">信封 · 思考与留言 →</button></div>
+    </div>
+  </div>
+
+  <div class="glow" id="glow"></div>
+  <div class="veil" id="veil"></div>
+</div>
+
+<div class="topbar">
+  <div class="brand">XIN</div>
+  <nav class="nav">
+    <a href="experience.html" data-i="experience">经历</a><a href="selected-work.html" data-i="works">个人作品</a><a href="#skills" data-i="skills">技能</a><a href="#about" data-i="about">关于</a>
+    <span class="langs" aria-label="语言选择">
+      <button class="lang" type="button" data-lang="ja">日本語</button>
+      <button class="lang active" type="button" data-lang="zh">中</button>
+      <button class="lang" type="button" data-lang="en">EN</button>
+    </span>
+  </nav>
+  <div class="skip-wrap" id="skipWrap">
+    <button class="skip" id="skip" type="button" aria-expanded="false">SKIP</button>
+    <div class="skip-menu" id="skipMenu">
+      <a href="portfolio-hero-demo.html" data-i="home">首页</a>
+      <a href="experience.html" data-i="experience">经历</a>
+      <a href="selected-work.html" data-i="works">个人作品</a>
+    </div>
+  </div>
+</div>
+
+<div class="hint" id="hint"><b>移动光标,像握着手电筒</b> · 照亮暗处,看看这个人是由什么构成的</div>
+
+<script>
+(function(){
+  var veil=document.getElementById('veil'), glow=document.getElementById('glow'),
+      reveal=document.getElementById('figureReveal'),
+      frame=document.getElementById('figureFrame'),
+      hint=document.getElementById('hint'), stage=document.getElementById('stage'),
+      objs=[].slice.call(document.querySelectorAll('.obj[data-k]'));
+  var mx=innerWidth/2, my=innerHeight/2, tx=mx, ty=my, R=150,
+      autoT=0, autoing=true, hasUserPointed=false;
+
+  function litCheck(){
+    for(var i=0;i<objs.length;i++){
+      var r=objs[i].getBoundingClientRect(),
+          cap=objs[i].querySelector('.cap'),
+          cr=cap.getBoundingClientRect(),
+          insideObject=tx>=r.left&&tx<=r.right&&ty>=r.top&&ty<=r.bottom,
+          insideButton=objs[i].classList.contains('lit')&&
+            tx>=cr.left&&tx<=cr.right&&ty>=cr.top&&ty<=cr.bottom,
+          isLit=hasUserPointed&&(insideObject||insideButton);
+      objs[i].classList.toggle('lit',isLit);
+    }
+  }
+  function paint(){
+    // 开场:光柱自动扫过一次
+    if(autoing){
+      autoT+=0.014;
+      var p=autoT, ease=p<1?(1-Math.pow(1-p,3)):1;
+      tx=innerWidth*(0.28+0.44*ease);
+      ty=innerHeight*(0.30+0.34*Math.sin(ease*Math.PI));
+      if(autoT>=1.15){autoing=false;}
+    }
+    mx+=(tx-mx)*0.12; my+=(ty-my)*0.12;
+    veil.style.setProperty('--x',mx+'px');
+    veil.style.setProperty('--y',my+'px');
+    veil.style.setProperty('--r',R+'px');
+    glow.style.setProperty('--gx',mx+'px');
+    glow.style.setProperty('--gy',my+'px');
+    var fr=frame.getBoundingClientRect();
+    reveal.style.setProperty('--lx',(mx-fr.left)+'px');
+    reveal.style.setProperty('--ly',(my-fr.top)+'px');
+    litCheck();
+    requestAnimationFrame(paint);
+  }
+  paint();
+
+  stage.addEventListener('mousemove',function(e){
+    autoing=false;hasUserPointed=true;tx=e.clientX;ty=e.clientY;
+  });
+  var touchSelection=null;
+  function objectAt(x,y){
+    for(var i=0;i<objs.length;i++){
+      var r=objs[i].getBoundingClientRect();
+      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return objs[i];
+    }
+    return null;
+  }
+  function pointTouch(t){
+    autoing=false;hasUserPointed=true;tx=t.clientX;ty=t.clientY;
+  }
+  stage.addEventListener('touchstart',function(e){
+    var t=e.touches[0];pointTouch(t);
+    var hit=objectAt(tx,ty);
+    if(hit&&touchSelection===hit){location.href=hit.dataset.href;}
+    touchSelection=hit;
+  },{passive:true});
+  stage.addEventListener('touchmove',function(e){
+    var t=e.touches[0];pointTouch(t);touchSelection=objectAt(tx,ty);
+  },{passive:true});
+
+  objs.forEach(function(o){
+    o.addEventListener('click',function(){
+      if(o.classList.contains('lit')){
+        location.href=o.dataset.href;
+      }
+    });
+  });
+  document.getElementById('skip').addEventListener('click',function(){
+    var wrap=document.getElementById('skipWrap'),open=wrap.classList.toggle('open');
+    this.setAttribute('aria-expanded',open?'true':'false');
+  });
+  document.addEventListener('click',function(e){
+    var wrap=document.getElementById('skipWrap');
+    if(!wrap.contains(e.target)){wrap.classList.remove('open');document.getElementById('skip').setAttribute('aria-expanded','false');}
+  });
+
+  var lang='zh', copy={
+    zh:{home:'首页',experience:'经历',works:'个人作品',skills:'技能',about:'关于',skip:'SKIP',
+      hint:'<b>移动光标,像握着手电筒</b> · 照亮暗处,看看这个人是由什么构成的',
+      diary:'日记 · 我的经历 →',tools:'工具箱 · 我的技能 →',paint:'油画 · 我的设计 →',
+      plush:'玩偶 · 我喜欢的 →',letter:'信封 · 思考与留言 →',
+      enter:'→ 进入板块：',skipAlert:'→ 跳过开场，直接进入作品列表'},
+    ja:{home:'ホーム',experience:'経歴',works:'プロジェクト',skills:'スキル',about:'私について',skip:'SKIP',
+      hint:'<b>光を動かして</b> · この人が何でできているのか、暗闇を照らして探してみてください',
+      diary:'日記 · 私の経歴 →',tools:'道具箱 · 私のスキル →',paint:'絵画 · 私のデザイン →',
+      plush:'人形 · 好きなもの →',letter:'手紙 · 考えと言葉 →',
+      enter:'→ セクションへ：',skipAlert:'→ オープニングをスキップして作品一覧へ'},
+    en:{home:'Home',experience:'Experience',works:'Selected Work',skills:'Skills',about:'About',skip:'SKIP',
+      hint:'<b>Move the light</b> · Discover what this person is made of',
+      diary:'Diary · Experience →',tools:'Toolbox · Skills →',paint:'Paintings · Design →',
+      plush:'Dolls · Interests →',letter:'Letters · Thoughts →',
+      enter:'→ Open section: ',skipAlert:'→ Skip the intro and view selected work'}
+  };
+  function setLang(next){
+    lang=next;document.documentElement.lang=lang;
+    document.querySelectorAll('[data-i]').forEach(function(a){a.textContent=copy[lang][a.dataset.i]});
+    document.getElementById('skip').textContent=copy[lang].skip;
+    document.getElementById('hint').innerHTML=copy[lang].hint;
+    objs.forEach(function(o){o.querySelector('.cap').textContent=copy[lang][o.dataset.k]});
+    document.querySelectorAll('.lang[data-lang]').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
+    localStorage.setItem('tx-lang',lang);
+  }
+  document.querySelectorAll('.lang[data-lang]').forEach(function(b){
+    b.addEventListener('click',function(){setLang(b.dataset.lang)});
+  });
+  setLang(localStorage.getItem('tx-lang')||'zh');
+
+  // 无障碍:尊重减弱动画偏好
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){autoing=false; R=260;}
+})();
+</script>
+</body>
+</html>

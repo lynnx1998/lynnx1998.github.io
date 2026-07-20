@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Guild Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#12102a;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:24px 0;font-family:'Inter',sans-serif;}
+@media(max-width:440px){body{padding:0}.phone{border-radius:0;box-shadow:none;border:0}}
+
+.phone{width:390px;height:844px;background:#1a1535;border-radius:44px;overflow:hidden;border:1px solid #3a2a5a;display:flex;flex-direction:column;position:relative;user-select:none;box-shadow:0 30px 80px #00000080;}
+
+.pages{display:flex;width:1560px;height:100%;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);}
+.page{width:390px;height:844px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── PAGE 1 ── */
+.hut-section{position:relative;flex:0 0 460px;overflow:hidden;transition:flex-basis 0.4s;}
+.hut-bg{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.hut-bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;
+  display:block;background:#0d0a1b;pointer-events:none;opacity:0;transition:opacity .3s ease;}
+.hut-bg-video.is-playing{opacity:1;}
+.hut-fade{position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to bottom,transparent,#1a1535);pointer-events:none;}
+.char-overlay{position:absolute;top:16px;left:16px;z-index:10;}
+.char-overlay img{height:68px;width:auto;filter:drop-shadow(0 2px 10px #00000090);}
+.expand-btn{position:absolute;top:16px;right:16px;z-index:10;width:36px;height:36px;background:rgba(20,12,40,.65);border:1px solid #5a3a8a;border-radius:8px;display:flex;gap:6px;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);transition:.2s}
+.expand-btn svg{width:18px;height:18px;stroke:#d4b870;fill:none;stroke-width:2;stroke-linecap:round;}
+.expand-label{display:none}.hut-section.expanded .expand-btn{width:36px}
+
+/* Calendar badge top-right on hut */
+.cal-badge{
+  position:absolute;top:58px;right:16px;z-index:10;
+  background:rgba(20,12,40,.75);
+  border:1px solid #5a3a8a;border-radius:10px;
+  padding:6px 10px;backdrop-filter:blur(4px);
+  cursor:pointer;text-align:center;min-width:54px;
+  transition:background .2s;
+}
+.cal-badge:hover{background:rgba(40,20,70,.85);}
+.cal-month{font-family:'Cinzel',serif;font-size:9px;color:#c8a060;letter-spacing:1px;text-transform:uppercase;}
+.cal-day{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:#ede0ff;line-height:1.1;}
+.cal-weekday{font-size:9px;color:#8070a8;margin-top:1px;}
+
+/* Calendar picker dropdown */
+.cal-picker{
+  position:absolute;top:120px;right:16px;z-index:100;
+  background:#1e1640;border:1px solid #4a3a6a;
+  border-radius:14px;padding:12px;width:200px;
+  display:none;box-shadow:0 8px 30px #00000060;
+}
+.cal-picker.open{display:block;}
+.cal-close{position:absolute;right:5px;top:4px;border:0;background:transparent;color:#7f6e92;cursor:pointer;font-size:10px}
+.cal-picker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.cal-picker-title{font-family:'Cinzel',serif;font-size:12px;color:#c8a060;}
+.cal-nav{background:none;border:none;color:#8060c0;font-size:16px;cursor:pointer;padding:0 4px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-cell{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:#a090c0;border-radius:6px;cursor:pointer;
+  transition:background .15s;
+}
+.cal-cell:hover{background:#3a2a60;color:#ede0ff;}
+.cal-cell.today{background:#6040a0;color:#fff;font-weight:600;}
+.cal-cell.selected{background:#9060d0;color:#fff;font-weight:600;}
+.cal-cell.dim{color:#3a2a52;}
+.cal-weekhead{font-size:9px;color:#5a4a72;text-align:center;padding:2px 0;font-family:'Cinzel',serif;}
+
+.task-section{flex:1;background:#1a1535;display:flex;flex-direction:column;overflow:hidden;}
+.task-header{display:flex;justify-content:space-between;align-items:center;padding:13px 20px 10px;border-bottom:1px solid #2e2450;}
+.task-title{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#f0e8ff;letter-spacing:.5px;}
+.task-date{font-size:11px;color:#8070a8;display:flex;align-items:center;gap:4px;}
+.dot{width:5px;height:5px;border-radius:50%;background:#c8a060;flex-shrink:0;}
+.task-list{flex:1;overflow-y:auto;scrollbar-width:none;}
+.task-list::-webkit-scrollbar{display:none;}
+.task-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #221d40;cursor:pointer;transition:background .15s;position:relative;}
+.task-item:hover{background:#221d3a;}
+.task-item:last-child{border-bottom:none;}
+.task-item::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:transparent;transition:background .2s;}
+.task-item:hover::before{background:#8060c0;}
+.task-icon{width:50px;height:50px;flex-shrink:0;border-radius:12px;background:#251d4a;border:1px solid #3e2e68;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px;}
+.task-icon img{width:100%;height:100%;object-fit:contain;}
+.task-body{flex:1;min-width:0;}
+.task-name{font-size:13px;font-weight:500;color:#e8d8ff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.task-orig{font-size:11px;color:#6a5a8a;margin-bottom:6px;}
+.task-bar-bg{height:3px;background:#2a2248;border-radius:2px;overflow:hidden;}
+.task-bar-fill{height:100%;border-radius:2px;}
+.ring-wrap{flex-shrink:0;width:46px;height:46px;position:relative;}
+.ring-wrap svg{transform:rotate(-90deg);width:46px;height:46px;}
+.ring-bg{fill:none;stroke:#2a2248;stroke-width:3.5;}
+.ring-fg{fill:none;stroke-width:3.5;stroke-linecap:round;}
+.ring-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:500;color:#d0c0f0;}
+
+.focus-bubble{position:absolute;left:49%;top:38%;z-index:14;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;padding:7px 11px 7px 12px;background:#f3eaffeb;border:1px solid #c9a9ea;border-radius:14px;color:#34204f;font-family:'Cinzel',serif;font-size:9px;font-weight:700;letter-spacing:.35px;box-shadow:0 6px 18px #09051675;pointer-events:none;animation:focusFloat 2.6s ease-in-out infinite;white-space:nowrap;}
+.focus-bubble::after{content:'';position:absolute;left:50%;bottom:-6px;width:10px;height:10px;background:#f3eaffeb;border-right:1px solid #c9a9ea;border-bottom:1px solid #c9a9ea;transform:translateX(-50%) rotate(45deg);}
+.focus-dots{display:flex;align-items:flex-end;gap:2px;height:7px;}
+.focus-dots i{display:block;width:3px;height:3px;border-radius:50%;background:#725091;animation:focusDot 1.25s ease-in-out infinite;}
+.focus-dots i:nth-child(2){animation-delay:.18s}.focus-dots i:nth-child(3){animation-delay:.36s}
+@keyframes focusFloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 3px))}}
+@keyframes focusDot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1}}
+.hut-section.expanded .focus-bubble{top:39%;}
+.hut-customize-btn{position:absolute;top:62px;right:16px;z-index:22;width:36px;height:36px;border-radius:9px;background:#160f30bf;border:1px solid #65458d;backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(-5px);transition:.22s;}
+.hut-section.expanded .hut-customize-btn{opacity:1;pointer-events:auto;transform:none;}
+.hut-customize-btn svg{width:17px;height:17px;fill:none;stroke:#d7bd78;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.hut-settings-panel{position:absolute;top:105px;right:16px;z-index:25;width:218px;padding:12px;background:#17112fe8;border:1px solid #60447f;border-radius:14px;backdrop-filter:blur(10px);box-shadow:0 12px 34px #0009;opacity:0;pointer-events:none;transform:translateY(-7px);transition:.2s;}
+.hut-settings-panel.open{opacity:1;pointer-events:auto;transform:none;}
+.hut-panel-title{font-family:'Cinzel',serif;font-size:11px;color:#e9dcf8;margin-bottom:9px;letter-spacing:.8px;}
+.panel-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.panel-title-row .hut-panel-title{margin:0}.panel-back{border:0;background:transparent;color:#aa91c1;cursor:pointer;font-size:11px;padding:4px 5px;border-radius:6px}.panel-back:hover{background:#34264d;color:#fff}.panel-heading{display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:13px}.panel-heading .panel-back{position:absolute;left:0}.panel-heading .role-panel-title,.panel-heading .social-panel-title{margin:0}.adv-panel-back{position:absolute;left:18px;top:18px;border:1px solid #54416f;background:#251d43;color:#cbb9de;border-radius:8px;padding:6px 8px;font-size:9px;cursor:pointer}.adventure-panel{position:relative}
+.hut-fold{border-top:1px solid #35284f;padding:8px 0;color:#bba9d3;font-size:10px;}
+.hut-fold summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+.hut-fold summary::after{content:'⌄';color:#8d72a9;}
+.hut-fold[open] summary::after{content:'⌃';}
+.hut-fold select{width:100%;margin-top:8px;background:#211944;color:#cdbce2;border:1px solid #4e3a69;border-radius:8px;padding:7px;font-size:10px;outline:none;}
+.hut-panel-action{width:100%;margin-top:7px;padding:8px;border-radius:9px;border:1px solid #594071;background:#2b204b;color:#d9cae9;font-size:10px;cursor:pointer;}
+.hut-panel-action.shop{border-color:#7b643e;color:#e2c882;background:#2a2138;}
+.hut-inventory{position:absolute;z-index:30;left:12px;right:12px;bottom:14px;padding:10px;background:#15102bde;border:1px solid #624a80;border-radius:16px;backdrop-filter:blur(12px);box-shadow:0 14px 34px #0009;opacity:0;pointer-events:none;transform:translateY(18px);transition:.24s}.hut-inventory.open{opacity:1;pointer-events:auto;transform:none}.inventory-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.inventory-tabs{display:flex;gap:4px}.inventory-tab{border:0;background:transparent;color:#77678e;border-radius:7px;padding:5px 8px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:.6px;cursor:pointer}.inventory-tab.active{background:#3a2859;color:#e5d7f3}.inventory-wallet{font-size:9px;color:#d2b875}.inventory-items{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.inventory-item{position:relative;min-width:0;height:58px;border:1px solid #3d3055;background:#211a3c;border-radius:10px;color:#8e7aa5;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:.18s}.inventory-item:hover,.inventory-item.placed{border-color:#ad82d0;background:#372653;color:#f0e2fa}.inventory-item.placed:after{content:'✓';position:absolute;right:4px;top:3px;width:13px;height:13px;border-radius:50%;background:#8e5fc0;color:white;font-size:8px;display:flex;align-items:center;justify-content:center}.item-icon{font-size:20px;line-height:1;filter:saturate(.7)}.item-name{font-size:7px;white-space:nowrap}.hut-prop{position:absolute;z-index:13;display:none;align-items:center;justify-content:center;color:#f0dca0;text-shadow:0 3px 9px #000;font-size:26px;filter:drop-shadow(0 7px 5px #0008);pointer-events:none}.hut-prop.placed{display:flex;animation:propIn .24s ease both}.hut-prop[data-prop="lamp"]{left:18%;bottom:25%;font-size:31px}.hut-prop[data-prop="books"]{right:21%;bottom:20%;font-size:27px}.hut-prop[data-prop="plant"]{right:10%;bottom:31%;font-size:29px}.hut-prop[data-prop="rug"]{left:42%;bottom:9%;font-size:36px;transform:scaleX(1.8)}.hut-prop[data-prop="doll"]{left:28%;bottom:19%;font-size:25px}@keyframes propIn{from{opacity:0;transform:translateY(6px) scale(.8)}to{opacity:1}}
+
+/* ── PAGE 2 ── */
+.qh-page{background:#1a1535;display:flex;flex-direction:column;overflow:hidden;}
+.qh-header{padding:18px 20px 14px;position:relative;}
+.qh-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#f0e8ff;letter-spacing:1px;}
+.qh-sub{font-size:11px;color:#c8a060;margin-top:3px;font-family:'Cinzel',serif;}
+.qh-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,#c8a06070,#c8a060,#c8a06070,transparent);}
+
+.qh-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 20px;}
+.qh-body::-webkit-scrollbar{display:none;}
+
+.sec-head{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;}
+.sec-title{font-family:'Cinzel',serif;font-size:11px;font-weight:600;color:#c8a060;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.sec-title::before{content:'✦';font-size:9px;}
+.sec-add{width:28px;height:28px;border-radius:50%;border:1px solid #5a4a7a;background:#251d4a;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#a080d0;font-size:18px;line-height:1;transition:background .15s;}
+.sec-add:hover{background:#352060;}
+
+.gold-div{height:1px;background:linear-gradient(90deg,transparent,#c8a06040,#c8a06070,#c8a06040,transparent);margin:8px 0;position:relative;}
+.gold-div::after{content:'✦';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:7px;color:#c8a060;background:#1a1535;padding:0 6px;}
+
+.qcard{background:#221d40;border:1px solid #352a58;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden;}
+.qcard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:transparent;transition:background .2s;}
+.qcard:hover{background:#2a2248;border-color:#4a3a70;}
+.qcard:hover::before{background:#8060c0;}
+.qcard-icon{width:52px;height:52px;flex-shrink:0;border-radius:10px;background:#251d4a;border:1px solid #3e2e68;overflow:hidden;padding:4px;display:flex;align-items:center;justify-content:center;}
+.qcard-icon img{width:100%;height:100%;object-fit:contain;}
+.qcard-body{flex:1;min-width:0;}
+.qcard-name{font-size:13px;font-weight:500;color:#e0d0ff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qcard-orig{font-size:11px;color:#6a5a8a;margin-bottom:6px;}
+.qcard-tag{display:inline-block;font-size:10px;font-family:'Cinzel',serif;color:#c8a060;background:#2a2038;border:1px solid #4a3a28;padding:2px 10px;border-radius:20px;}
+
+.qcheck{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1.5px solid #4a3a6a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
+.qcheck.done{border-color:#50c080;background:#50c08025;}
+.qcheck.done svg{stroke:#50c080;}
+.qcheck:not(.done) svg{stroke:#4a3a6a;}
+.qcheck svg{width:16px;height:16px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+.qinput-wrap{display:flex;gap:8px;align-items:stretch;margin-bottom:10px;}
+.qinput{flex:1;background:#221d40;border:1px solid #352a58;border-radius:12px;padding:12px 14px;font-size:13px;color:#d0c0f0;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.qinput::placeholder{color:#4a3a6a;}
+.qinput:focus{border-color:#8060c0;}
+.qinput-btn{width:46px;background:#251d4a;border:1px solid #4a3070;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .2s;}
+.qinput-btn:hover{background:#352060;}
+.qinput-btn svg{width:18px;height:18px;stroke:#a080e0;fill:none;stroke-width:1.5;stroke-linecap:round;}
+
+.dream-pills{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.dream-pill{background:#221d40;border:1px solid #352a58;border-radius:30px;padding:10px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s,background .2s;}
+.dream-pill:hover{background:#2a2248;border-color:#4a3a70;}
+.dream-icon{width:32px;height:32px;flex-shrink:0;border-radius:8px;background:#251d4a;border:1px solid #3e2e68;overflow:hidden;padding:3px;display:flex;align-items:center;justify-content:center;}
+.dream-icon img{width:100%;height:100%;object-fit:contain;}
+.dream-star{color:#c8a060;font-size:13px;flex-shrink:0;}
+.dream-text{font-size:13px;color:#d0c0f0;}
+
+
+/* ── PAGE 3: CHRONICLE ── */
+.ch-page{background:#1a1535;display:flex;flex-direction:column;overflow:hidden;}
+.ch-header{padding:18px 20px 14px;position:relative;}
+.ch-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#f0e8ff;letter-spacing:1px;}
+.ch-sub{font-size:11px;color:#c8a060;margin-top:3px;font-family:'Cinzel',serif;}
+.ch-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,#c8a06070,#c8a060,#c8a06070,transparent);}
+.ch-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:14px 16px 20px;}
+.ch-body::-webkit-scrollbar{display:none;}
+
+.entry{
+  background:#221d40;border:1px solid #352a58;border-radius:16px;
+  margin-bottom:14px;overflow:hidden;cursor:pointer;
+  transition:border-color .2s,transform .15s;
+}
+.entry:hover{border-color:#5a4a8a;transform:translateY(-1px);}
+.entry-imgwrap{width:100%;height:140px;overflow:hidden;border-radius:15px 15px 0 0;background:#12102a;}
+.entry-img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.entry-meta{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 0;}
+.entry-date{font-family:'Cinzel',serif;font-size:11px;color:#c8a060;letter-spacing:1px;}
+.entry-count{font-size:10px;color:#7a6a9a;font-family:'Cinzel',serif;}
+.entry-text{
+  margin:6px 14px 14px;font-size:12.5px;line-height:1.6;color:#b8a8d8;
+  font-style:italic;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;max-height:calc(1.6em * 2);
+}
+
+/* Detail overlay */
+.ch-detail{
+  position:absolute;inset:0;z-index:200;
+  background:#1a1535;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(0.4,0,0.2,1);
+  border-radius:44px;overflow:hidden;
+}
+.ch-detail.open{transform:translateY(0);}
+.det-top{position:relative;flex-shrink:0;}
+.det-img{width:100%;height:230px;object-fit:cover;display:block;}
+.det-fade{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to bottom,transparent,#1a1535);}
+.det-back{
+  position:absolute;top:16px;left:16px;z-index:5;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(20,12,40,.7);border:1px solid #5a3a8a;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  backdrop-filter:blur(4px);
+}
+.det-back svg{width:16px;height:16px;stroke:#d4b870;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.det-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:4px 22px 24px;}
+.det-body::-webkit-scrollbar{display:none;}
+.det-date{font-family:'Cinzel',serif;font-size:13px;color:#c8a060;letter-spacing:1.5px;margin-bottom:12px;}
+.det-prose{font-size:14px;line-height:1.85;color:#d8c8f0;font-style:italic;}
+.det-log{display:none;}
+.det-log-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 0;border-bottom:1px solid #2a2248;
+  font-size:13px;color:#d0c0f0;
+}
+.det-log-item:last-child{border-bottom:none;}
+.det-log-item .tick{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid #50c080;background:#50c08025;
+  display:flex;align-items:center;justify-content:center;
+}
+.det-log-item .tick svg{width:10px;height:10px;stroke:#50c080;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+.det-log-sum{
+  margin-top:14px;padding-top:12px;border-top:1px solid #352a58;
+  font-family:'Cinzel',serif;font-size:11px;color:#c8a060;letter-spacing:1px;
+}
+.ch-detail.raw .det-prose{display:none;}
+.ch-detail.raw .det-log{display:block;}
+.det-hint{
+  margin-top:22px;text-align:center;
+  font-size:10px;color:#5a4a72;font-family:'Cinzel',serif;letter-spacing:1px;
+}
+
+/* ── DAILY ADVENTURE ── */
+.adventure-progress{margin:12px 0 4px;padding:14px;background:linear-gradient(135deg,#241b47,#1d173b);border:1px solid #4b3873;border-radius:14px;}
+.adv-progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.adv-progress-title{font-family:'Cinzel',serif;font-size:11px;color:#d7c5f5;letter-spacing:1px;}
+.adv-progress-count{font-size:10px;color:#c8a060;}
+.adv-bar{height:5px;background:#17122d;border-radius:4px;overflow:hidden;}
+.adv-bar-fill{height:100%;width:60%;background:linear-gradient(90deg,#7040ba,#b477ff,#d4b870);transition:width .35s;border-radius:4px;}
+.adv-progress-note{font-size:10px;color:#74658f;margin-top:8px;line-height:1.45;}
+.adventure-sheet{position:absolute;inset:0;z-index:180;background:#110d25e8;backdrop-filter:blur(8px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;}
+.adventure-sheet.open{opacity:1;pointer-events:auto;}
+.adventure-panel{width:100%;background:#1c1638;border:1px solid #5a4680;border-bottom:0;border-radius:26px 26px 0 0;padding:24px 18px 30px;transform:translateY(20px);transition:transform .28s;box-shadow:0 -20px 60px #0008;}
+.adventure-sheet.open .adventure-panel{transform:translateY(0);}
+.adv-kicker{font-family:'Cinzel',serif;font-size:10px;color:#c8a060;letter-spacing:2px;text-align:center;margin-bottom:9px;}
+.adv-question{font-family:'Cinzel',serif;font-size:17px;line-height:1.45;color:#f1e8ff;text-align:center;margin:0 12px 18px;}
+.adv-choices{display:grid;gap:9px;}
+.adv-choice{display:flex;align-items:center;gap:12px;width:100%;padding:12px;background:#251e48;border:1px solid #443467;border-radius:13px;color:#e1d4f5;cursor:pointer;text-align:left;transition:.18s;font-family:'Inter',sans-serif;}
+.adv-choice:hover{background:#30245a;border-color:#8060b0;transform:translateY(-1px);}
+.adv-choice-icon{width:36px;height:36px;border-radius:9px;background:#17122e;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.adv-choice strong{display:block;font-size:13px;font-weight:500;}
+.adv-choice small{display:block;font-size:10px;color:#76668f;margin-top:2px;}
+.adv-later{display:block;margin:15px auto 0;border:0;background:none;color:#6e6088;font-size:11px;cursor:pointer;}
+.entry-viewtag{font-size:9px;color:#9c7ad0;border:1px solid #56416f;border-radius:10px;padding:2px 7px;margin-left:6px;}
+.entry.raw-card .entry-text.story-copy{display:none;}
+.entry .record-copy{display:none;margin:8px 14px 14px;}
+.entry.raw-card .record-copy{display:block;}
+.record-row{display:flex;gap:8px;align-items:center;padding:5px 0;color:#b8a8d8;font-size:11px;border-bottom:1px solid #30264d;}
+.record-row:last-child{border-bottom:0;}
+.record-dot{color:#65c99a;}
+.record-row strong{display:block;color:#d7c7ef;font-size:11px;font-weight:500;margin-bottom:2px;}
+.record-row small{display:block;color:#75668e;font-size:9.5px;line-height:1.35;}
+.entry-new{animation:entryIn .45s ease both;}
+@keyframes entryIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+
+/* ── PAGE 4: CHARACTER & SETTINGS ── */
+.cr-page{background:#1a1535;display:flex;flex-direction:column;overflow:hidden;}
+.cr-header{padding:18px 20px 14px;position:relative;}
+.cr-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#f0e8ff;letter-spacing:1px;}
+.cr-sub{font-size:11px;color:#c8a060;margin-top:3px;font-family:'Cinzel',serif;}
+.cr-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,#c8a06070,#c8a060,#c8a06070,transparent);}
+.cr-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:14px 16px 24px;}
+.cr-body::-webkit-scrollbar{display:none;}
+.role-card{background:linear-gradient(135deg,#281d4d,#211a40);border:1px solid #4a376e;border-radius:17px;padding:14px;margin-bottom:14px;box-shadow:0 10px 24px #0c081b42;}
+.role-top{display:flex;align-items:center;gap:12px;}
+.role-sigil{width:46px;height:46px;border-radius:13px;background:#17122e;border:1px solid #60458c;display:flex;align-items:center;justify-content:center;color:#d3b268;font-size:22px;font-family:'Cinzel',serif;box-shadow:inset 0 0 18px #6d3db52c;}
+.role-info{flex:1;min-width:0;}
+.role-name{font-family:'Cinzel',serif;font-size:16px;color:#f1e8ff;font-weight:600;}
+.role-class{font-size:10px;color:#9b82c3;margin-top:2px;letter-spacing:.6px;}
+.role-switch{border:1px solid #5a437d;background:#2d2152;color:#cdb9eb;border-radius:10px;padding:7px 9px;font-size:10px;cursor:pointer;}
+.role-stats{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid #3a2c59;}
+.role-stat strong{display:block;font-family:'Cinzel',serif;font-size:12px;color:#e7d7ff;}
+.role-stat span{font-size:9px;color:#75658e;}
+.xp-row{display:flex;justify-content:space-between;margin-top:12px;font-size:9px;color:#83729b;}
+.xp-track{height:4px;background:#17122e;border-radius:5px;overflow:hidden;margin-top:6px;}
+.xp-fill{height:100%;width:88%;background:linear-gradient(90deg,#7544be,#b477ff,#d4b870);}
+.role-picker{display:none;margin-top:12px;gap:7px;}
+.role-picker.open{display:grid;}
+.role-option{display:flex;align-items:center;gap:10px;background:#1c1637;border:1px solid #3a2c57;border-radius:11px;padding:9px;cursor:pointer;color:#cdbfe2;}
+.role-option:hover,.role-option.selected{border-color:#8060b0;background:#2a204b;}
+.role-option .mini-sigil{width:28px;height:28px;border-radius:8px;background:#251c43;display:flex;align-items:center;justify-content:center;color:#c8a060;}
+.role-option strong{display:block;font-size:11px;font-weight:500;}
+.role-option small{display:block;font-size:9px;color:#736487;margin-top:1px;}
+.settings-group{margin-top:15px;}
+.settings-title{font-family:'Cinzel',serif;font-size:10px;color:#c8a060;letter-spacing:1.7px;margin:0 4px 7px;}
+.settings-card{background:#211b3d;border:1px solid #352a55;border-radius:14px;overflow:hidden;}
+.setting-row{min-height:48px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #302648;}
+.setting-row:last-child{border-bottom:0;}
+.setting-copy{min-width:0;}
+.setting-label{font-size:12px;color:#d7c9e9;}
+.setting-desc{font-size:9px;color:#6f6184;margin-top:2px;line-height:1.35;}
+.setting-select{max-width:132px;background:#17122e;border:1px solid #48365f;color:#bfaed6;border-radius:9px;padding:6px 8px;font-size:10px;outline:none;}
+.switch{width:36px;height:20px;border-radius:12px;background:#33294d;border:1px solid #4a3b63;position:relative;cursor:pointer;flex-shrink:0;transition:.2s;}
+.switch::after{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;border-radius:50%;background:#77688e;transition:.2s;}
+.switch.on{background:#6940a7;border-color:#9163ce;}
+.switch.on::after{left:18px;background:#e8dbf8;}
+.data-btn{width:100%;border:0;background:none;color:#cfc0e4;text-align:left;font:inherit;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.data-arrow{color:#665778;font-size:15px;}
+.role-sheet{position:absolute;inset:0;z-index:220;background:#100c23d9;backdrop-filter:blur(7px);display:none;align-items:flex-end;}
+.role-sheet.open{display:flex;}
+.role-panel{width:100%;background:#1d1738;border:1px solid #584173;border-bottom:0;border-radius:25px 25px 0 0;padding:20px 18px 28px;}
+.role-panel-title{font-family:'Cinzel',serif;font-size:15px;color:#eee4fb;text-align:center;margin-bottom:13px;}
+.role-create{margin-top:8px;width:100%;padding:10px;border:1px dashed #654d82;border-radius:11px;background:#231b41;color:#a994c5;cursor:pointer;}
+.cr-toast{position:absolute;left:50%;bottom:86px;transform:translate(-50%,12px);background:#120e27;border:1px solid #604986;color:#d9cbea;padding:9px 14px;border-radius:20px;font-size:10px;opacity:0;pointer-events:none;transition:.25s;white-space:nowrap;z-index:240;}
+.cr-toast.show{opacity:1;transform:translate(-50%,0);}
+.social-card{background:linear-gradient(135deg,#211a40,#17122e);border:1px solid #45335f;border-radius:14px;padding:12px}.social-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.social-counts{display:flex;gap:14px}.social-count strong{display:block;color:#e8dcf7;font-family:'Cinzel',serif;font-size:12px}.social-count span{display:block;color:#76678a;font-size:8px;margin-top:2px}.social-avatars{display:flex}.social-avatar{width:34px;height:34px;margin-left:-7px;border-radius:50%;border:2px solid #211a40;background:linear-gradient(145deg,#72518e,#2b2147);display:flex;align-items:center;justify-content:center;color:#eee2fa;font-family:'Cinzel',serif;font-size:10px}.social-avatar:first-child{margin-left:0}.social-open{border:1px solid #5a4377;background:#2b204b;color:#d5c5e9;border-radius:9px;padding:7px 9px;font-size:9px;cursor:pointer}.social-note{display:flex;align-items:center;gap:7px;color:#82728f;font-size:9px;border-top:1px solid #352849;padding-top:9px;margin-top:9px}.social-note i{color:#d0ae69;font-style:normal}.social-sheet{position:absolute;inset:0;z-index:225;background:#100c23df;backdrop-filter:blur(7px);display:none;align-items:flex-end}.social-sheet.open{display:flex}.social-panel{width:100%;background:#1d1738;border:1px solid #584173;border-bottom:0;border-radius:25px 25px 0 0;padding:20px 18px 28px}.social-panel-title{font-family:'Cinzel',serif;font-size:15px;color:#eee4fb;text-align:center}.social-panel-sub{font-size:9px;color:#79698e;text-align:center;margin:4px 0 14px}.visitor-row{display:flex;align-items:center;gap:10px;border-top:1px solid #35294e;padding:11px 2px}.visitor-avatar{width:34px;height:34px;border-radius:50%;background:#2b2147;border:1px solid #5d4774;display:flex;align-items:center;justify-content:center;color:#d9c7ec;font-family:'Cinzel',serif;font-size:10px}.visitor-copy{flex:1}.visitor-copy strong{display:block;font-size:10px;color:#d9cce8;font-weight:500}.visitor-copy small{display:block;color:#756787;font-size:8.5px;margin-top:3px}.visitor-action{border:1px solid #55416d;background:#261d42;color:#bca9d2;border-radius:8px;padding:6px 8px;font-size:8px;cursor:pointer}.visitor-add{width:100%;margin-top:8px;padding:10px;border:1px dashed #654d82;border-radius:11px;background:#231b41;color:#b6a1cd;cursor:pointer;font-size:10px}
+
+.entry-viewtag{cursor:pointer;background:#241a43;transition:.18s;white-space:nowrap;}
+.entry-viewtag:hover{background:#342356;border-color:#8b63b5;color:#dbc8f3;}
+.det-mode{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#15102c;border:1px solid #33264f;border-radius:11px;padding:4px;margin:0 0 15px;}
+.det-mode-btn{border:0;border-radius:8px;background:transparent;color:#75648d;padding:8px 6px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.8px;cursor:pointer;transition:.18s;}
+.det-mode-btn.active{background:#352456;color:#e7d9f8;box-shadow:0 2px 9px #0005;}
+.entry{position:relative;}
+
+.qh-page{position:relative;}
+.adventure-sheet{left:0;right:0;width:100%;max-width:390px;}
+.qh-body .qcard{cursor:default;}
+.qh-body .qcard:hover{transform:none;}
+.qcheck{pointer-events:none;cursor:default;}
+.adventure-progress{cursor:pointer;position:relative;overflow:hidden;transition:border-color .2s,transform .18s,box-shadow .2s;}
+.adventure-progress:hover{border-color:#8a62b9;transform:translateY(-1px);box-shadow:0 8px 22px #0b071b66;}
+.adventure-progress.ready::after{content:attr(data-badge);position:absolute;right:-22px;top:9px;transform:rotate(36deg);background:#9b6bd0;color:#fff;padding:3px 25px;font-family:'Cinzel',serif;font-size:7px;letter-spacing:1px;}
+.adv-kicker{color:#d5b66f;}
+.adv-choice{position:relative;}
+.adv-choice::after{content:'›';position:absolute;right:13px;color:#6f5a88;font-size:18px;}
+.adv-choice strong{padding-right:20px;}
+.adv-later{padding:7px 10px;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{flex-shrink:0;height:72px;background:#130f28;border-top:1px solid #2a2248;display:flex;align-items:center;justify-content:space-around;padding:0 8px 8px;position:relative;}
+.bottom-nav::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,#c8a06050,transparent);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 10px;border-radius:10px;transition:background .15s;min-width:52px;}
+.nav-item:hover{background:#221d3a;}
+.nav-item svg{width:22px;height:22px;}
+.nav-label{font-size:10px;letter-spacing:.5px;font-family:'Cinzel',serif;}
+.nav-item.active .nav-label{color:#b080f0;}
+.nav-item:not(.active) .nav-label{color:#5a4a72;}
+.nav-item:not(.active) svg{stroke:#5a4a72;fill:none;}
+.page-dots{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);display:flex;gap:5px;pointer-events:none;}
+.page-dot{width:4px;height:4px;border-radius:50%;background:#3a2a58;transition:background .3s,width .3s;}
+.page-dot.active{background:#b080f0;width:12px;border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+<div class="pages" id="pages">
+
+<!-- ══ PAGE 1: HOME ══ -->
+<div class="page">
+  <div class="hut-section" id="hutSection">
+    <img class="hut-bg" src="assets/asset-01-f02cc8530290.png" alt="Hut">
+    <video class="hut-bg-video" autoplay muted loop playsinline webkit-playsinline preload="metadata"
+      poster="assets/asset-01-f02cc8530290.png" aria-label="Animated fantasy study room">
+      <source src="assets/asset-20-eaf10b2d39f1.mp4" type="video/mp4">
+    </video>
+    <div class="hut-fade"></div>
+    <div class="char-overlay"><img src="assets/asset-02-1084e2dfbef9.png" alt="Aelion"></div>
+
+<div class="focus-bubble" aria-live="polite"><span id="idleSub">Focusing</span><span class="focus-dots"><i></i><i></i><i></i></span></div>
+<button class="hut-customize-btn" id="hutCustomizeBtn" onclick="toggleHutSettings(event)" aria-label="Hut settings">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6v.2h-4V21a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 00.3-1.9A1.7 1.7 0 003 14H2.8v-4H3a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 009 4.6 1.7 1.7 0 0010 3v-.2h4V3a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.6 1h.2v4H21a1.7 1.7 0 00-1.6 1z"/></svg>
+</button>
+<div class="hut-settings-panel" id="hutSettingsPanel" onclick="event.stopPropagation()">
+  <div class="panel-title-row"><div class="hut-panel-title" data-hut-copy>Hut Settings</div><button class="panel-back" data-back="close" onclick="closeHutPanels()">✕</button></div>
+  <details class="hut-fold"><summary data-hut-copy>Scene</summary><select onchange="hutSettingChanged(this)"><option data-hut-copy>Hut</option><option data-hut-copy>Outdoors</option><option data-hut-copy>Forest</option></select></details>
+  <details class="hut-fold"><summary data-hut-copy>Lighting</summary><select onchange="hutSettingChanged(this)"><option data-hut-copy>Warm Hearth</option><option data-hut-copy>Moonlit</option><option data-hut-copy>Dawn</option></select></details>
+  <button class="hut-panel-action" data-hut-copy onclick="hutDemoAction('decorate')">Decorate Hut</button>
+  <button class="hut-panel-action shop" data-hut-copy onclick="hutDemoAction('shop')">Visit Guild Shop</button>
+</div>
+<span class="hut-prop" data-prop="lamp">♨</span><span class="hut-prop" data-prop="books">▥</span><span class="hut-prop" data-prop="plant">♧</span><span class="hut-prop" data-prop="rug">◒</span><span class="hut-prop" data-prop="doll">♙</span>
+<div class="hut-inventory" id="hutInventory" onclick="event.stopPropagation()">
+  <div class="inventory-head"><div class="inventory-tabs"><button class="inventory-tab active" data-inventory="owned" onclick="switchInventoryTab(this,'owned')">OWNED</button><button class="inventory-tab" data-inventory="shop" onclick="switchInventoryTab(this,'shop')">GUILD SHOP</button></div><span class="inventory-wallet">✦ 1,240</span><button class="panel-back" data-back="close" onclick="closeHutPanels()">✕</button></div>
+  <div class="inventory-items">
+    <button class="inventory-item" data-item="lamp" onclick="placeHutItem(this)"><span class="item-icon">♨</span><span class="item-name" data-inventory="lamp">Hearth lamp</span></button>
+    <button class="inventory-item" data-item="books" onclick="placeHutItem(this)"><span class="item-icon">▥</span><span class="item-name" data-inventory="books">Old tomes</span></button>
+    <button class="inventory-item" data-item="plant" onclick="placeHutItem(this)"><span class="item-icon">♧</span><span class="item-name" data-inventory="plant">Moon fern</span></button>
+    <button class="inventory-item" data-item="rug" onclick="placeHutItem(this)"><span class="item-icon">◒</span><span class="item-name" data-inventory="rug">Woven rug</span></button>
+    <button class="inventory-item" data-item="doll" onclick="placeHutItem(this)"><span class="item-icon">♙</span><span class="item-name" data-inventory="doll">Guild doll</span></button>
+  </div>
+</div>
+    <div class="expand-btn" onclick="toggleHut()">
+      <svg id="hutIcon" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      <span class="expand-label" data-back="backWord">Back</span>
+    </div>
+
+  </div>
+
+  <div class="task-section" id="taskSection">
+    <div class="task-header">
+      <span class="task-title">Today's Quests</span>
+      <span class="task-date"><span class="dot"></span><span id="taskDateLabel">Sat, Jul 12</span></span>
+    </div>
+    <div class="task-list">
+      <div class="task-item">
+        <div class="task-icon"><img src="assets/asset-03-8a9e11e34b55.png" alt="tome"></div>
+        <div class="task-body">
+          <div class="task-name">Study an Ancient Tome</div>
+          <div class="task-orig">Read for 30 minutes</div>
+          <div class="task-bar-bg"><div class="task-bar-fill" style="width:40%;background:linear-gradient(90deg,#6040b0,#a070f0)"></div></div>
+        </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 46 46"><circle class="ring-bg" cx="23" cy="23" r="18"/><circle class="ring-fg" cx="23" cy="23" r="18" stroke="#9070e0" stroke-dasharray="45.2 113.1"/></svg>
+          <span class="ring-label">40%</span>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-icon"><img src="assets/asset-04-2a12735eb5fb.png" alt="potion"></div>
+        <div class="task-body">
+          <div class="task-name">Brew 8 Potions of Life</div>
+          <div class="task-orig">Drink 8 glasses of water</div>
+          <div class="task-bar-bg"><div class="task-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 46 46"><circle class="ring-bg" cx="23" cy="23" r="18"/><circle class="ring-fg" cx="23" cy="23" r="18" stroke="#6040a0" stroke-dasharray="0 113.1"/></svg>
+          <span class="ring-label">0%</span>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-icon"><img src="assets/asset-05-364c91a084a4.png" alt="scroll"></div>
+        <div class="task-body">
+          <div class="task-name">Complete the Lost Emblem</div>
+          <div class="task-orig">Walk 5km in the park</div>
+          <div class="task-bar-bg"><div class="task-bar-fill" style="width:25%;background:linear-gradient(90deg,#2090a0,#50d0d0)"></div></div>
+        </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 46 46"><circle class="ring-bg" cx="23" cy="23" r="18"/><circle class="ring-fg" cx="23" cy="23" r="18" stroke="#50c0c0" stroke-dasharray="28.3 113.1"/></svg>
+          <span class="ring-label">25%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="goPage(0)">
+      <svg viewBox="0 0 24 24" stroke="#b080f0" fill="#b080f015" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12L12 4L21 12V21H16V15H8V21H3V12Z"/></svg>
+      <span class="nav-label" style="color:#b080f0;">Home</span>
+    </div>
+    <div class="nav-item" onclick="goPage(1)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke-linecap="round"/><line x1="8" y1="16" x2="12" y2="16" stroke-linecap="round"/></svg>
+      <span class="nav-label">Quests</span>
+    </div>
+    <div class="nav-item" onclick="goPage(2)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H19a1 1 0 011 1v16a1 1 0 01-1 1H5.5A1.5 1.5 0 014 19.5z"/><path d="M8 7h8M8 11h8M8 15h5" stroke-linecap="round"/></svg>
+      <span class="nav-label">Chronicle</span>
+    </div>
+    <div class="nav-item" onclick="goPage(3)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 22C4 18 7.6 15 12 15C16.4 15 20 18 20 22" stroke-linecap="round"/></svg>
+      <span class="nav-label">Character</span>
+    </div>
+    <div class="page-dots"><div class="page-dot active" id="d0"></div><div class="page-dot" id="d1"></div><div class="page-dot" id="d2"></div><div class="page-dot" id="d3"></div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE 2: QUEST HALL ══ -->
+<div class="page qh-page">
+  <div class="qh-header" style="position:relative;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div class="qh-title">Quest Hall</div>
+        <div class="qh-sub">Lv.24</div>
+      </div>
+      <!-- Calendar button -->
+      <div onclick="toggleCal(event)" style="display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;background:#251d4a;border:1px solid #4a3a6a;cursor:pointer;transition:background .2s;margin-top:4px;" onmouseover="this.style.background='#352060'" onmouseout="this.style.background='#251d4a'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c8a060" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="qhDateLabel" style="font-family:'Cinzel',serif;font-size:11px;color:#c8a060;white-space:nowrap;">Sat, Jul 12</span>
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#6a5a8a" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+    <!-- Calendar picker -->
+    <div class="cal-picker" id="calPicker" style="top:72px;right:0;left:auto;">
+      <button class="cal-close" data-back="close" onclick="document.getElementById('calPicker').classList.remove('open')">✕</button>
+      <div class="cal-picker-header">
+        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+        <span class="cal-picker-title" id="calPickerTitle">July 2026</span>
+        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+  </div>
+  <div class="qh-body">
+    <div class="sec-head">
+      <span class="sec-title">Summoned Rites</span>
+      <div class="sec-add">+</div>
+    </div>
+    <div class="qcard">
+      <div class="qcard-icon"><img src="assets/asset-04-2a12735eb5fb.png" alt="potion"></div>
+      <div class="qcard-body"><div class="qcard-name">Renew the Vital Draught</div><div class="qcard-orig">Drink water</div><span class="qcard-tag">Daily</span></div>
+      <div class="qcheck done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="qcard">
+      <div class="qcard-icon"><img src="assets/asset-03-8a9e11e34b55.png" alt="book"></div>
+      <div class="qcard-body"><div class="qcard-name">Scribe Arcane Thoughts</div><div class="qcard-orig">Read for 30 minutes</div><span class="qcard-tag">Daily</span></div>
+      <div class="qcheck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="qcard">
+      <div class="qcard-icon"><img src="assets/asset-06-fc8de121a7c9.png" alt="boots"></div>
+      <div class="qcard-body"><div class="qcard-name">Run the Twilight Path</div><div class="qcard-orig">Run 3 kilometers</div><span class="qcard-tag">Weekly</span></div>
+      <div class="qcheck done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="gold-div"></div>
+    <div class="sec-head"><span class="sec-title">Inscribe a Quest</span></div>
+    <div class="qinput-wrap">
+      <input class="qinput" type="text" placeholder="What will you accomplish today...">
+      <div class="qinput-btn"><svg viewBox="0 0 24 24"><path d="M15 4.5L19.5 9M4 20l1.5-4.5L17 4l3 3L8.5 18.5 4 20z"/><path d="M14 6l4 4"/></svg></div>
+    </div>
+    <div class="qcard">
+      <div class="qcard-icon"><img src="assets/asset-07-76b5601741a3.png" alt="stew"></div>
+      <div class="qcard-body"><div class="qcard-name">Prepare the Mage's Feast</div><div class="qcard-orig">Cook a proper meal</div></div>
+      <div class="qcheck done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="qcard">
+      <div class="qcard-icon"><img src="assets/asset-08-051c6badf5aa.png" alt="lute"></div>
+      <div class="qcard-body"><div class="qcard-name">Attune the Harmonic Strings</div><div class="qcard-orig">Practice guitar 20 min</div></div>
+      <div class="qcheck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="gold-div"></div>
+    <div class="sec-head"><span class="sec-title">Dream Vault</span></div>
+    <p style="font-size:11px;color:#6a5a8a;margin:-4px 0 12px;font-style:italic;">The guild watches over your deepest wishes</p>
+    <div class="qinput-wrap">
+      <input class="qinput" type="text" placeholder="A dream you wish to fulfill...">
+      <div class="qinput-btn"><svg viewBox="0 0 24 24"><path d="M15 4.5L19.5 9M4 20l1.5-4.5L17 4l3 3L8.5 18.5 4 20z"/><path d="M14 6l4 4"/></svg></div>
+    </div>
+    <div class="dream-pills">
+      <div class="dream-pill"><span class="dream-star">✦</span><span class="dream-text">Conquer the Ancient Trails · 3000m</span></div>
+      <div class="dream-pill"><div class="dream-icon"><img src="assets/asset-09-6d3332ebb918.png" alt="telescope"></div><span class="dream-text">Explore the Coastal Ruins</span></div>
+      <div class="dream-pill"><span class="dream-star">✦</span><span class="dream-text">Master All Arcane Tomes</span></div>
+    </div>
+    <div class="adventure-progress" id="adventureProgress" onclick="openAdventureIfReady()">
+      <div class="adv-progress-top"><span class="adv-progress-title">Today's Adventure</span><span class="adv-progress-count" id="advProgressCount">3 / 5 rites</span></div>
+      <div class="adv-bar"><div class="adv-bar-fill" id="advBarFill"></div></div>
+      <div class="adv-progress-note" id="advProgressNote">The preparations are complete. Tap to choose where Aelion goes tonight.</div>
+    </div>
+  </div>
+  <div class="adventure-sheet" id="adventureSheet" onclick="closeAdventure(event)">
+    <div class="adventure-panel" onclick="event.stopPropagation()">
+      <button class="adv-panel-back" data-back="back" aria-label="Back" onclick="closeAdventure()">←</button>
+      <div class="adv-kicker">3 RITES COMPLETE · REPORT UNLOCKED</div>
+      <div class="adv-question">Choose the direction of today’s report</div>
+      <div class="adv-choices">
+        <button class="adv-choice" onclick="chooseAdventure('forest')"><span class="adv-choice-icon">⚔</span><span><strong>Heroic Journey</strong><small>Emphasize completed goals, effort and momentum</small></span></button>
+        <button class="adv-choice" onclick="chooseAdventure('research')"><span class="adv-choice-icon">◇</span><span><strong>Quiet Reflection</strong><small>Focus on mood, concentration and small victories</small></span></button>
+        <button class="adv-choice" onclick="chooseAdventure('market')"><span class="adv-choice-icon">✦</span><span><strong>Fantasy Chronicle</strong><small>Turn today’s tasks into a vivid RPG adventure</small></span></button>
+      </div>
+      <button class="adv-later" onclick="closeAdventure()">Not now · no report will be created</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goPage(0)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12L12 4L21 12V21H16V15H8V21H3V12Z"/></svg>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item active" onclick="goPage(1)">
+      <svg viewBox="0 0 24 24" stroke="#b080f0" fill="#b080f015" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke-linecap="round"/><line x1="8" y1="16" x2="12" y2="16" stroke-linecap="round"/></svg>
+      <span class="nav-label" style="color:#b080f0;">Quests</span>
+    </div>
+    <div class="nav-item" onclick="goPage(2)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H19a1 1 0 011 1v16a1 1 0 01-1 1H5.5A1.5 1.5 0 014 19.5z"/><path d="M8 7h8M8 11h8M8 15h5" stroke-linecap="round"/></svg>
+      <span class="nav-label">Chronicle</span>
+    </div>
+    <div class="nav-item" onclick="goPage(3)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 22C4 18 7.6 15 12 15C16.4 15 20 18 20 22" stroke-linecap="round"/></svg>
+      <span class="nav-label">Character</span>
+    </div>
+    <div class="page-dots"><div class="page-dot" id="d0b"></div><div class="page-dot active" id="d1b"></div><div class="page-dot" id="d2b"></div><div class="page-dot" id="d3b"></div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE 3: CHRONICLE ══ -->
+<div class="page ch-page">
+  <div class="ch-header">
+    <div class="ch-title">Chronicle</div>
+    <div class="ch-sub">15 entries inscribed</div>
+  </div>
+
+  <div class="ch-body" id="chronicleList">
+
+    <div class="entry" onclick="toggleEntryCard(this)">
+      <div class="entry-imgwrap"><img class="entry-img" src="assets/asset-10-7e4586f46e43.jpg" alt=""></div>
+      <div class="entry-meta">
+        <span class="entry-date">JUL 11 · FRIDAY</span>
+        <span class="entry-count">3 / 3 rites</span>
+      </div>
+      <div class="entry-text">At dusk I ventured onto the old road, where a shadow had long haunted the crossroads. It dissolved into light…</div>
+    </div>
+
+    <div class="entry" onclick="toggleEntryCard(this)">
+      <div class="entry-imgwrap"><img class="entry-img" src="assets/asset-11-6b5d58aaf2c8.jpg" alt=""></div>
+      <div class="entry-meta">
+        <span class="entry-date">JUL 10 · THURSDAY</span>
+        <span class="entry-count">2 / 3 rites</span>
+      </div>
+      <div class="entry-text">The candle burned lower than I meant it to. I fell asleep over the seventh chapter, quill still in hand…</div>
+    </div>
+
+<div class="entry" onclick="toggleEntryCard(this)">
+  <div class="entry-imgwrap"><img class="entry-img" src="assets/asset-12-9e7dcd3f91fc.png" alt="Aelion resting beside a misty lake at sunrise"></div>
+  <div class="entry-meta">
+    <span class="entry-date">JUL 9 · WEDNESDAY</span>
+    <span class="entry-count">4 / 4 rites</span>
+  </div>
+  <div class="entry-text">Before the guild bells stirred, I carried a slender rod to the lake and waited beside a sunrise made of gold…</div>
+</div>
+
+<div class="entry" onclick="toggleEntryCard(this)">
+  <div class="entry-imgwrap"><img class="entry-img" src="assets/asset-13-db82ade04ade.png" alt="Aelion cooking vegetable stew in a rainy alchemist kitchen"></div>
+  <div class="entry-meta">
+    <span class="entry-date">JUL 8 · TUESDAY</span>
+    <span class="entry-count">4 / 4 rites</span>
+  </div>
+  <div class="entry-text">Rain sealed the tower windows, so I turned the evening into a smaller kind of alchemy: heat, herbs, and patience…</div>
+</div>
+
+<div class="entry" onclick="toggleEntryCard(this)">
+  <div class="entry-imgwrap"><img class="entry-img" src="assets/asset-14-1abb5e22f051.png" alt="Aelion practicing lute beneath the moon in an empty guild hall"></div>
+  <div class="entry-meta">
+    <span class="entry-date">JUL 7 · MONDAY</span>
+    <span class="entry-count">3 / 3 rites</span>
+  </div>
+  <div class="entry-text">The guild hall was empty after moonrise. I stayed until one difficult phrase finally became music…</div>
+</div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goPage(0)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12L12 4L21 12V21H16V15H8V21H3V12Z"/></svg>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" onclick="goPage(1)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke-linecap="round"/><line x1="8" y1="16" x2="12" y2="16" stroke-linecap="round"/></svg>
+      <span class="nav-label">Quests</span>
+    </div>
+    <div class="nav-item active" onclick="goPage(2)">
+      <svg viewBox="0 0 24 24" stroke="#b080f0" fill="#b080f015" stroke-width="1.5" stroke-linejoin="round"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H19a1 1 0 011 1v16a1 1 0 01-1 1H5.5A1.5 1.5 0 014 19.5z"/><path d="M8 7h8M8 11h8M8 15h5" stroke-linecap="round"/></svg>
+      <span class="nav-label" style="color:#b080f0;">Chronicle</span>
+    </div>
+    <div class="nav-item" onclick="goPage(3)">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 22C4 18 7.6 15 12 15C16.4 15 20 18 20 22" stroke-linecap="round"/></svg>
+      <span class="nav-label">Character</span>
+    </div>
+    <div class="page-dots"><div class="page-dot" id="d0c"></div><div class="page-dot" id="d1c"></div><div class="page-dot active" id="d2c"></div><div class="page-dot" id="d3c"></div></div>
+  </div>
+
+  <!-- Detail overlay -->
+  <div class="ch-detail" id="chDetail">
+    <div class="det-top">
+      <img class="det-img" id="detImg" src="assets/asset-10-7e4586f46e43.jpg" alt="">
+      <div class="det-fade"></div>
+      <div class="det-back" onclick="closeEntry()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+    </div>
+    <div class="det-body">
+      <div class="det-date" id="detDate">JULY 11 · FRIDAY</div><div class="det-mode"><button class="det-mode-btn active" id="detAdventureBtn" onclick="setDetailMode(false,event)">ADVENTURE</button><button class="det-mode-btn" id="detRecordBtn" onclick="setDetailMode(true,event)">TRUE RECORD</button></div>
+      <div class="det-prose" id="detProse"></div>
+      <div class="det-log" id="detLog"></div>
+      <div class="det-hint" id="detHint">Use the buttons above to switch views</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 4: CHARACTER & SETTINGS ══ -->
+<div class="page cr-page">
+  <div class="cr-header">
+    <div class="cr-title">Character</div>
+    <div class="cr-sub">Adventurer & preferences</div>
+  </div>
+  <div class="cr-body">
+    <div class="role-card">
+      <div class="role-top">
+        <div class="role-sigil" id="roleSigil">✦</div>
+        <div class="role-info"><div class="role-name" id="roleName">Aelion</div><div class="role-class" id="roleClass">TWILIGHT MAGE</div></div>
+        <button class="role-switch" onclick="toggleRoleSheet()">Switch⌄</button>
+      </div>
+      <div class="role-stats">
+        <div class="role-stat"><strong id="roleLevel">Lv.24</strong><span>Level</span></div>
+        <div class="role-stat"><strong id="roleStreak">12 days</strong><span>Streak</span></div>
+        <div class="role-stat"><strong id="roleQuests">84</strong><span>Quests</span></div>
+      </div>
+      <div class="xp-row"><span>Arcane experience</span><span id="roleXp">2,840 / 3,200 EXP</span></div>
+      <div class="xp-track"><div class="xp-fill" id="roleXpFill"></div></div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-title" data-social="section">FRIENDS & VISITORS</div>
+      <div class="social-card">
+        <div class="social-top"><div class="social-counts"><div class="social-count"><strong>12</strong><span data-social="friends">FRIENDS</span></div><div class="social-count"><strong>28</strong><span data-social="visitors">VISITORS</span></div></div><div class="social-avatars"><span class="social-avatar">M</span><span class="social-avatar">K</span><span class="social-avatar">N</span></div></div>
+        <button class="social-open" data-social="guestbook" onclick="toggleSocialSheet()">Open guestbook</button>
+        <div class="social-note"><i>✦</i><span data-social="lastVisit">Mira left a lantern mark at your hut.</span></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-title">ROLE</div>
+      <div class="settings-card">
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Character name</div><div class="setting-desc">Name shown in your Chronicle</div></div><span class="setting-select" id="characterNameValue">Aelion</span></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Class</div><div class="setting-desc">Changes how real tasks become quests</div></div><span class="setting-select" id="characterClassValue">Mage</span></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Narrative style</div><div class="setting-desc">Voice used for generated adventures</div></div><select class="setting-select" onchange="settingChanged('Narrative style',this.value)"><option>Epic fantasy</option><option>Warm & healing</option><option>Dark adventure</option><option>Lighthearted</option><option>Plain record</option></select></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Adventure intensity</div><div class="setting-desc">How strongly tasks are transformed</div></div><select class="setting-select" onchange="settingChanged('Adventure intensity',this.value)"><option>Immersive</option><option selected>Standard</option><option>Light</option></select></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-title">LANGUAGE & DISPLAY</div>
+      <div class="settings-card">
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Interface language</div></div><select class="setting-select" id="interfaceLanguage" onchange="applyInterfaceLanguage(this.value,true)"><option value="en">English</option><option value="zh">简体中文</option><option value="ja">日本語</option></select></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Story language</div><div class="setting-desc">Language used in Chronicle entries</div></div><select class="setting-select" id="storyLanguage" onchange="applyStoryLanguage(this.value,true)"><option value="en">English</option><option value="zh">简体中文</option><option value="ja">日本語</option></select></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Display settings</div><div class="setting-desc">Choose the interface appearance</div></div><select class="setting-select" id="displaySettings" onchange="settingChanged('Display settings',this.value)"><option>Day Mode</option><option>Night Mode</option><option>Minimal</option></select></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Quest notifications</div><div class="setting-desc">Daily reminders from the guild</div></div><div class="switch on" onclick="toggleSetting(this,'Quest notifications')"></div></div>
+        <div class="setting-row"><div class="setting-copy"><div class="setting-label">Default Chronicle view</div></div><select class="setting-select" onchange="settingChanged('Chronicle view',this.value)"><option>Adventure</option><option>True record</option></select></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-title">DATA & PRIVACY</div>
+      <div class="settings-card">
+        <div class="setting-row"><button class="data-btn" onclick="exportChronicle()"><span><span class="setting-label">Export Chronicle</span><span class="setting-desc" style="display:block">Download a text copy of your adventures</span></span><span class="data-arrow">›</span></button></div>
+        <div class="setting-row"><button class="data-btn" onclick="showCharacterToast('Backup is up to date')"><span class="setting-label">Backup & restore</span><span class="data-arrow">›</span></button></div>
+        <div class="setting-row"><button class="data-btn" onclick="showCharacterToast('Privacy controls opened')"><span class="setting-label">Privacy controls</span><span class="data-arrow">›</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goPage(0)"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12L12 4L21 12V21H16V15H8V21H3V12Z"/></svg><span class="nav-label">Home</span></div>
+    <div class="nav-item" onclick="goPage(1)"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span class="nav-label">Quests</span></div>
+    <div class="nav-item" onclick="goPage(2)"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H19a1 1 0 011 1v16a1 1 0 01-1 1H5.5A1.5 1.5 0 014 19.5z"/></svg><span class="nav-label">Chronicle</span></div>
+    <div class="nav-item active" onclick="goPage(3)"><svg viewBox="0 0 24 24" stroke="#b080f0" fill="#b080f015" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 22C4 18 7.6 15 12 15C16.4 15 20 18 20 22"/></svg><span class="nav-label" style="color:#b080f0;">Character</span></div>
+    <div class="page-dots"><div class="page-dot" id="d0d"></div><div class="page-dot" id="d1d"></div><div class="page-dot" id="d2d"></div><div class="page-dot active" id="d3d"></div></div>
+  </div>
+
+  <div class="role-sheet" id="roleSheet" onclick="toggleRoleSheet(event)">
+    <div class="role-panel" onclick="event.stopPropagation()">
+      <div class="panel-heading"><button class="panel-back" data-back="back" aria-label="Back" onclick="toggleRoleSheet()">←</button><div class="role-panel-title">Choose an Adventurer</div></div>
+      <div class="role-option selected" data-role="aelion" onclick="selectRole('aelion')"><span class="mini-sigil">✦</span><span><strong>Aelion</strong><small>Twilight Mage · Lv.24</small></span></div>
+      <div class="role-option" data-role="kael" onclick="selectRole('kael')"><span class="mini-sigil">♜</span><span><strong>Kael</strong><small>Kingdom Knight · Lv.12</small></span></div>
+      <div class="role-option" data-role="mira" onclick="selectRole('mira')"><span class="mini-sigil">⌁</span><span><strong>Mira</strong><small>Forest Ranger · Lv.8</small></span></div>
+      <button class="role-create" onclick="showCharacterToast('Character creator coming next');toggleRoleSheet()">＋ Create new character</button>
+    </div>
+  </div>
+  <div class="social-sheet" id="socialSheet" onclick="toggleSocialSheet(event)">
+    <div class="social-panel" onclick="event.stopPropagation()">
+      <div class="panel-heading"><button class="panel-back" data-back="back" aria-label="Back" onclick="toggleSocialSheet()">←</button><div class="social-panel-title" data-social="sheetTitle">Friends & Visitors</div></div>
+      <div class="social-panel-sub" data-social="sheetSub">Quiet traces from travelers who visited your hut</div>
+      <div class="visitor-row"><div class="visitor-avatar">M</div><div class="visitor-copy"><strong>Mira · Forest Ranger</strong><small data-social="v1">Left a lantern mark · 2h ago</small></div><button class="visitor-action" data-social="visit" onclick="socialAction('hut')">Visit hut</button></div>
+      <div class="visitor-row"><div class="visitor-avatar">K</div><div class="visitor-copy"><strong>Kael · Kingdom Knight</strong><small data-social="v2">Admired your reading nook · yesterday</small></div><button class="visitor-action" data-social="visit" onclick="socialAction('hut')">Visit hut</button></div>
+      <div class="visitor-row"><div class="visitor-avatar">N</div><div class="visitor-copy"><strong>Nono · Herb Alchemist</strong><small data-social="v3">Sent a moonflower seed · 3d ago</small></div><button class="visitor-action" data-social="thank" onclick="socialAction('thanks')">Thank</button></div>
+      <button class="visitor-add" data-social="add" onclick="socialAction('add')">＋ Add a friend by Guild ID</button>
+    </div>
+  </div>
+  <div class="cr-toast" id="characterToast">Setting updated</div>
+</div>
+
+</div></div>
+
+<script>
+// ── State ──
+let cur = 0;
+let selDate = new Date(2026, 6, 12); // July 12 2026
+let calViewYear = 2026, calViewMonth = 6;
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const weekdaysShort = ['S','M','T','W','T','F','S'];
+
+// ── Calendar ──
+function renderCal() {
+  const y = calViewYear, m = calViewMonth;
+  document.getElementById('calPickerTitle').textContent = months[m] + ' ' + y;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  weekdaysShort.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-weekhead';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today = new Date(2026, 6, 12);
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-cell dim';
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-cell';
+    el.textContent = d;
+    const thisDate = new Date(y, m, d);
+    if (thisDate.toDateString() === today.toDateString()) el.classList.add('today');
+    if (thisDate.toDateString() === selDate.toDateString()) el.classList.add('selected');
+    el.addEventListener('click', () => selectDate(new Date(y, m, d)));
+    grid.appendChild(el);
+  }
+}
+
+function selectDate(date) {
+  selDate = date;
+  updateDateDisplay();
+  renderCal();
+  document.getElementById('calPicker').classList.remove('open');
+}
+
+function updateDateDisplay() {
+  const d = selDate;
+  const short = weekdays[d.getDay()].slice(0,3) + ', ' + months[d.getMonth()].slice(0,3) + ' ' + d.getDate();
+  document.getElementById('taskDateLabel').textContent = short;
+  document.getElementById('qhDateLabel').textContent = short;
+}
+
+function toggleCal(e) {
+  e.stopPropagation();
+  const p = document.getElementById('calPicker');
+  calViewYear = selDate.getFullYear();
+  calViewMonth = selDate.getMonth();
+  renderCal();
+  p.classList.toggle('open');
+}
+
+function changeMonth(dir) {
+  calViewMonth += dir;
+  if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+  if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+  renderCal();
+}
+
+document.addEventListener('click', () => {
+  document.getElementById('calPicker').classList.remove('open');
+});
+
+// ── Navigation ──
+function goPage(n) {
+  cur = n;
+  document.getElementById('pages').style.transform = `translateX(${-n*390}px)`;
+  ['d0','d1','d2','d3','d0b','d1b','d2b','d3b','d0c','d1c','d2c','d3c','d0d','d1d','d2d','d3d'].forEach((id,idx) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.className = 'page-dot' + ((idx%4)===n?' active':'');
+  });
+}
+
+// ── Chronicle ──
+const entries = [
+  {
+    date: 'JULY 11 · FRIDAY',
+    img: 'assets/asset-15-0734ffdfc57d.png',
+    teaser: "I spent a full day preparing for the Magic Academy examinations, pausing only when the sunset turned every page to gold…",
+    prose: "The examination bells will sound soon, so I gave the day to preparation. By the window I revised the old laws of transmutation, rebuilt three pages of notes, and tested myself until the answers came without hesitation.<br><br>When the sunset finally poured across the desk, I allowed myself one quiet cup of tea. The city roofs glowed amber beyond the glass, and for the first time this week, the Academy gates did not feel so far away.<br><br>It was not a dramatic adventure. It was something better: a full day, honestly spent.",
+    log: [
+      ['Completed two 50-minute focused study sessions', 'Rehearse the Laws of Transmutation'],
+      ['Finished chapters 7–9 and condensed them into one-page notes', 'Decode the Three Sealed Chapters'],
+      ['Completed a 40-question practice exam and reviewed every mistake', 'Survive the Academy Trial'],
+      ['Built a revision plan for the final seven days before the exam', 'Chart the Road to the Academy'],
+      ['Prepared tomorrow’s desk, materials, water and flash cards', 'Ready the Scholar’s Workbench']
+    ],
+    sum: '5 / 5 COMPLETED · 4H 35M FOCUSED · +420 EXP'
+  },
+  {
+    date: 'JULY 10 · THURSDAY',
+    img: 'assets/asset-16-5ea4a36b24f2.png',
+    teaser: "At the edge of the twilight forest, I descended from the ridge toward a lantern-lit kitchen I had dreamed of visiting…",
+    prose: "I climbed beyond the last cedar marker and reached the ridge before the sun began to fall. The valley opened beneath me in violet and gold, and the long forest road seemed almost gentle from above.<br><br>On the way down, I followed a line of lanterns to the little woodland kitchen I had wanted to visit for months. My boots were dusty, my legs were tired, and the first warm meal tasted like a reward written especially for this journey.<br><br>Some quests end with treasure. This one ended with a mountain behind me and an empty plate before me.",
+    log: [
+      ['Hiked the full 11.8 km ridge trail', 'Cross the High Cedar Pass'],
+      ['Reached the summit viewpoint before sunset', 'Stand Above the Violet Valley'],
+      ['Logged 18,642 steps and 860 m elevation gain', 'Complete the Mountain Ascent'],
+      ['Took photographs and wrote a short trail reflection', 'Preserve the Ridge in the Chronicle'],
+      ['Visited the restaurant saved on my list and tried its signature dinner', 'Feast at the Lantern Kitchen']
+    ],
+    sum: '5 / 5 COMPLETED · 11.8 KM · 860 M ASCENT · +500 EXP'
+  },
+  {
+    date: 'JULY 9 · WEDNESDAY',
+    img: 'assets/asset-12-9e7dcd3f91fc.png',
+    teaser: "Before the guild bells stirred, I carried a slender rod to the lake and waited beside a sunrise made of gold…",
+    prose: "I woke before the first bell and carried the old cedar rod down the pine road while the forest was still blue with sleep. At the lake, I sat on the edge of the dock, cast toward the mist, and watched the sun turn every ripple to copper.<br><br>The float barely moved. For once, that did not feel like failure. I drank the water I had brought, listened to the reeds, and let the morning become quiet around me.<br><br>I returned without a fish, but with a steadier mind than the one I had brought.",
+    log: [
+      ['Spent 40 quiet minutes fishing by the lake', 'Keep Watch Over the Golden Water'],
+      ['Left the phone packed away for the whole session', 'Silence the Distant Mirrors'],
+      ['Drank a full bottle of water before returning', 'Restore the Clear Draught'],
+      ['Cleaned and stored the fishing gear', 'Ready the Lakeside Kit']
+    ],
+    sum: '4 / 4 COMPLETED · 40M OUTDOORS · +320 EXP'
+  },
+  {
+    date: 'JULY 8 · TUESDAY',
+    img: 'assets/asset-13-db82ade04ade.png',
+    teaser: "Rain sealed the tower windows, so I turned the evening into a smaller kind of alchemy: heat, herbs, and patience…",
+    prose: "The rain began before dusk and drummed against the tower glass until going out felt impossible. I lit the hearth instead and gathered what the pantry still offered: roots, greens, mushrooms, and the last good loaf.<br><br>The pot asked for patience more than skill. By the time the broth deepened and the room filled with rosemary, the day no longer felt scattered. I ate slowly beside the window and packed another bowl for tomorrow.<br><br>A proper meal is a spell that keeps working long after the fire goes dark.",
+    log: [
+      ['Cooked a balanced vegetable dinner at home', 'Brew the Hearthkeeper’s Stew'],
+      ['Prepared an extra portion for tomorrow', 'Seal Tomorrow’s Provision'],
+      ['Drank eight glasses of water across the day', 'Complete the Vital Draught'],
+      ['Cleaned the kitchen before resting', 'Restore the Alchemist’s Bench']
+    ],
+    sum: '4 / 4 COMPLETED · 2 MEALS PREPARED · +340 EXP'
+  },
+  {
+    date: 'JULY 7 · MONDAY',
+    img: 'assets/asset-14-1abb5e22f051.png',
+    teaser: "The guild hall was empty after moonrise. I stayed until one difficult phrase finally became music…",
+    prose: "After the others left, I carried the lute to the little stage beneath the eastern windows. The same four measures had resisted me all week, each change of chord arriving a fraction too late.<br><br>I slowed the crystal pulse, played the phrase without ornament, and began again. On the twenty-third attempt my hands stopped arguing with the melody. Golden sparks rose from the strings and vanished into the rafters.<br><br>I did not play for an audience tonight. I played until effort became sound.",
+    log: [
+      ['Practiced guitar for 25 focused minutes', 'Attune the Harmonic Strings'],
+      ['Repeated the difficult chord change at a slow tempo', 'Master the Stubborn Measure'],
+      ['Recorded one clean take to review tomorrow', 'Preserve the Moonlit Melody']
+    ],
+    sum: '3 / 3 COMPLETED · 25M PRACTICE · +260 EXP'
+  }
+];
+
+const chDetail = document.getElementById('chDetail');
+
+function openEntry(i) {
+  const e = entries[i];
+  document.getElementById('detImg').src = e.img;
+  document.getElementById('detDate').textContent = e.date;
+  document.getElementById('detProse').innerHTML = e.prose;
+  document.getElementById('detLog').innerHTML =
+    e.log.map(([raw, fancy]) => `
+      <div class="det-log-item">
+        <span class="tick"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>${raw}</span>
+      </div>`).join('') +
+    `<div class="det-log-sum">${e.sum}</div>`;
+  chDetail.classList.remove('raw');
+  chDetail.classList.add('open');
+}
+
+function closeEntry() {
+  chDetail.classList.remove('open');
+  chDetail.classList.remove('raw');
+}
+
+// A normal click switches a card between the adventure and the true record.
+function toggleEntryCard(card) {
+  card.classList.toggle('raw-card');
+  const tag = card.querySelector('.entry-viewtag');
+  if (tag) tag.textContent = card.classList.contains('raw-card') ? 'TRUE RECORD' : 'ADVENTURE';
+}
+
+function hydrateExistingEntries() {
+  document.querySelectorAll('#chronicleList .entry').forEach((card, i) => {
+    const entry = entries[i];
+    if (!entry) return;
+    const image = card.querySelector('.entry-img');
+    if (image) image.src = entry.img;
+    const story = card.querySelector('.entry-text');
+    if (story) {
+      story.classList.add('story-copy');
+      story.textContent = entry.teaser;
+    }
+    const meta = card.querySelector('.entry-count');
+    if (meta) meta.textContent = `${entry.log.length} / ${entry.log.length} rites`;
+    if (meta && !card.querySelector('.entry-viewtag')) meta.insertAdjacentHTML('afterend', '<span class="entry-viewtag">ADVENTURE</span>');
+    if (!card.querySelector('.record-copy')) {
+      card.insertAdjacentHTML('beforeend', `<div class="record-copy">${entry.log.map(([raw, fancy]) => `<div class="record-row"><span class="record-dot">✓</span><span><strong>${fancy}</strong><small>${raw}</small></span></div>`).join('')}<div class="det-log-sum">${entry.sum}</div></div>`);
+    }
+  });
+}
+
+const adventureOptions = {
+  forest: {
+    image: 'assets/asset-17-a850b5d38b32.png',
+    title: 'Explore the Forest',
+    story: 'Beyond the old road, violet lights gathered beneath the trees. I followed them to a wounded moon-spirit and used the day’s hard-earned rites to restore its glow.'
+  },
+  research: {
+    image: 'assets/asset-18-c60e3b1f7fb5.png',
+    title: 'Study in the Room',
+    story: 'Rain traced silver paths across the window while I opened the sealed chapter. Each completed rite became a line of light, revealing a spell hidden between the pages.'
+  },
+  market: {
+    image: 'assets/asset-19-ff98d76ccf0c.png',
+    title: 'Visit the Night Market',
+    story: 'Under the last violet lanterns, I traded herbs, stories, and half a loaf of bread with a watchful black cat. The quiet market remembered every deed of the day.'
+  }
+};
+
+let adventureCreated = false;
+
+function getQuestState() {
+  const all = [...document.querySelectorAll('.qcheck')];
+  const done = all.filter(el => el.classList.contains('done'));
+  return { all, done };
+}
+
+function updateAdventureProgress(showPrompt = false) {
+  const {all, done} = getQuestState();
+  const pct = all.length ? Math.round(done.length / all.length * 100) : 0;
+  document.getElementById('advProgressCount').textContent = `${done.length} / ${all.length} rites`;
+  document.getElementById('advBarFill').style.width = pct + '%';
+  const note = document.getElementById('advProgressNote');
+  if (adventureCreated) note.textContent = 'Tonight’s adventure has been inscribed in the Chronicle.';
+  else if (done.length >= 3) note.textContent = 'The preparations are complete. Tap to choose where Aelion goes tonight.';
+  else note.textContent = `${3 - done.length} more rite${3 - done.length === 1 ? '' : 's'} to unlock tonight’s story.`;
+  if (showPrompt && done.length >= 3 && !adventureCreated) openAdventureIfReady();
+}
+
+function toggleQuest(el) {
+  el.classList.toggle('done');
+  updateAdventureProgress(true);
+}
+
+function openAdventureIfReady() {
+  const {done} = getQuestState();
+  if (done.length >= 3 && !adventureCreated) document.getElementById('adventureSheet').classList.add('open');
+}
+
+function closeAdventure(event) {
+  if (event && event.target.closest('.adventure-panel')) return;
+  document.getElementById('adventureSheet').classList.remove('open');
+}
+
+function chooseAdventure(type) {
+  const option = adventureOptions[type];
+  const {all, done} = getQuestState();
+  const realTasks = done.map(el => el.closest('.qcard').querySelector('.qcard-orig').textContent);
+  const date = weekdays[selDate.getDay()].toUpperCase();
+  const label = months[selDate.getMonth()].slice(0,3).toUpperCase() + ' ' + selDate.getDate() + ' · ' + date;
+  const rows = realTasks.map(task => `<div class="record-row"><span class="record-dot">✓</span><span>${task}</span></div>`).join('');
+  const card = document.createElement('div');
+  card.className = 'entry entry-new';
+  card.onclick = () => toggleEntryCard(card);
+  card.innerHTML = `<div class="entry-imgwrap"><img class="entry-img" src="${option.image}" alt="${option.title}"></div><div class="entry-meta"><span class="entry-date">${label}</span><span class="entry-count">${done.length} / ${all.length} rites</span><span class="entry-viewtag">ADVENTURE</span></div><div class="entry-text story-copy">${option.story}</div><div class="record-copy">${rows}<div class="det-log-sum">${done.length} / ${all.length} COMPLETED · +${done.length * 80} EXP</div></div>`;
+  document.getElementById('chronicleList').prepend(card);
+  document.querySelector('.ch-sub').textContent = '13 entries inscribed';
+  adventureCreated = true;
+  closeAdventure();
+  updateAdventureProgress();
+  setTimeout(() => goPage(2), 260);
+}
+
+// ── Character & Settings ──
+const characterRoles = {
+  aelion:{name:'Aelion',className:'TWILIGHT MAGE',classShort:'Mage',sigil:'✦',level:'Lv.24',streak:'12 days',quests:'84',xp:'2,840 / 3,200 EXP',xpWidth:'88%'},
+  kael:{name:'Kael',className:'KINGDOM KNIGHT',classShort:'Knight',sigil:'♜',level:'Lv.12',streak:'7 days',quests:'41',xp:'920 / 1,400 EXP',xpWidth:'66%'},
+  mira:{name:'Mira',className:'FOREST RANGER',classShort:'Ranger',sigil:'⌁',level:'Lv.8',streak:'4 days',quests:'27',xp:'510 / 900 EXP',xpWidth:'57%'}
+};
+function toggleRoleSheet(event){if(event&&event.target.closest('.role-panel'))return;document.getElementById('roleSheet').classList.toggle('open');}
+function selectRole(key){
+  const r=characterRoles[key];
+  document.getElementById('roleName').textContent=r.name;document.getElementById('roleClass').textContent=r.className;document.getElementById('roleSigil').textContent=r.sigil;
+  document.getElementById('roleLevel').textContent=r.level;document.getElementById('roleStreak').textContent=r.streak;document.getElementById('roleQuests').textContent=r.quests;
+  document.getElementById('roleXp').textContent=r.xp;document.getElementById('roleXpFill').style.width=r.xpWidth;
+  document.getElementById('characterNameValue').textContent=r.name;document.getElementById('characterClassValue').textContent=r.classShort;
+  document.querySelectorAll('.role-option').forEach(el=>el.classList.toggle('selected',el.dataset.role===key));
+  document.title='Guild Log · '+r.name;toggleRoleSheet();showCharacterToast(r.name+' is now active');
+}
+function toggleSetting(el,label){el.classList.toggle('on');showCharacterToast(label+' '+(el.classList.contains('on')?'enabled':'disabled'));}
+function settingChanged(label,value){showCharacterToast(label+': '+value);}
+function toggleSocialSheet(event){if(event&&event.target.closest('.social-panel'))return;document.getElementById('socialSheet').classList.toggle('open')}
+function socialAction(type){const lang=document.getElementById('interfaceLanguage')?.value||'en';const text={en:{hut:'Friend’s hut opened',thanks:'A thank-you mark was sent',add:'Guild ID search opened'},zh:{hut:'已打开好友小屋',thanks:'已送出感谢徽记',add:'已打开公会 ID 搜索'},ja:{hut:'フレンドの小屋を開きました',thanks:'お礼の印を送りました',add:'ギルドID検索を開きました'}}[lang][type];showCharacterToast(text);if(type!=='thanks')document.getElementById('socialSheet').classList.remove('open')}
+let characterToastTimer;
+function showCharacterToast(message){const t=document.getElementById('characterToast');t.textContent=message;t.classList.add('show');clearTimeout(characterToastTimer);characterToastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
+function exportChronicle(){
+  const lines=entries.map(e=>e.date+'\n'+e.teaser+'\n'+e.log.map(x=>'✓ '+x[0]).join('\n')).join('\n\n——————\n\n');
+  const blob=new Blob([lines],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='guild-log-chronicle.txt';a.click();URL.revokeObjectURL(url);showCharacterToast('Chronicle exported');
+}
+
+const interfaceCopy = {
+  en:{headers:['Today’s Quests','Quest Hall','Chronicle','Character'],subs:['Lv.24','15 entries inscribed','Adventurer & preferences'],nav:['Home','Quests','Chronicle','Character'],sections:['Summoned Rites','Inscribe a Quest','Dream Vault'],groups:['ROLE','LANGUAGE & DISPLAY','DATA & PRIVACY'],labels:['Character name','Class','Narrative style','Adventure intensity','Interface language','Story language','Display settings','Quest notifications','Default Chronicle view','Export Chronicle','Backup & restore','Privacy controls'],descs:['Name shown in your Chronicle','Changes how real tasks become quests','Voice used for generated adventures','How strongly tasks are transformed','Language used in Chronicle entries','Choose the interface appearance','Daily reminders from the guild','Download a text copy of your adventures'],switchText:'Switch⌄',roleTitle:'Choose an Adventurer',create:'＋ Create new character'},
+  zh:{headers:['今日任务','任务大厅','冒险编年史','角色'],subs:['等级 24','已记录 15 篇日记','冒险者与偏好设置'],nav:['主页','任务','日记','角色'],sections:['每日仪式','记录一项任务','愿望宝库'],groups:['角色设定','语言与显示','数据与隐私'],labels:['角色名称','职业','叙事风格','冒险化程度','界面语言','故事语言','显示设置','任务提醒','日记默认视图','导出冒险日记','备份与恢复','隐私控制'],descs:['显示在冒险日记中的名字','决定现实任务如何转化为冒险','生成冒险故事时使用的语气','任务被奇幻化的程度','冒险日记所使用的语言','选择界面的显示外观','来自公会的每日任务提醒','下载所有冒险记录的文本副本'],switchText:'切换⌄',roleTitle:'选择冒险者',create:'＋ 创建新角色'},
+  ja:{headers:['今日のクエスト','クエストホール','冒険年代記','キャラクター'],subs:['レベル 24','15件の記録','冒険者と環境設定'],nav:['ホーム','クエスト','年代記','キャラ'],sections:['召喚された儀式','クエストを記す','夢の保管庫'],groups:['キャラクター','言語と表示','データとプライバシー'],labels:['キャラクター名','クラス','物語のスタイル','冒険表現の強さ','表示言語','物語の言語','表示設定','クエスト通知','年代記の初期表示','年代記を書き出す','バックアップと復元','プライバシー設定'],descs:['年代記に表示される名前','現実のタスクをクエストへ変換します','生成される冒険物語の語り口','タスクをファンタジー化する強さ','年代記の物語に使用する言語','画面の表示スタイルを選びます','ギルドから届く毎日のリマインダー','冒険記録をテキストでダウンロード'],switchText:'切替⌄',roleTitle:'冒険者を選ぶ',create:'＋ 新しいキャラクターを作成'}
+};
+
+const storyEntriesEnglish = entries.map(e=>JSON.parse(JSON.stringify(e)));
+const storyCopy = {
+  zh:[
+    {date:'7月11日 · 星期五',teaser:'魔法学院的考试钟声即将响起，我把整整一天都交给了复习，直到落日把每一页染成金色……',prose:'考试钟声很快就会响起，于是我把这一天献给准备。我在窗边重温古老的转化法则，重新整理了三页笔记，一遍遍测试自己，直到答案不再迟疑。<br><br>夕阳终于越过书桌时，我允许自己安静地喝一杯茶。窗外的城市屋顶泛着琥珀色，这一周以来，学院的大门第一次显得不再遥远。<br><br>这并不是一场轰轰烈烈的冒险，却是更珍贵的东西：诚实而充实的一天。',log:[['完成两轮 50 分钟专注学习','复习转化法则'],['读完第 7–9 章并整理成单页笔记','解读三章封印典籍'],['完成 40 题模拟考试并复盘错误','通过学院试炼'],['制定考试前最后七天的复习计划','绘制通往学院的路线'],['准备好明天的书桌、资料、水与卡片','整理学者的工作台']],sum:'5 / 5 已完成 · 专注 4小时35分 · +420 经验'},
+    {date:'7月10日 · 星期四',teaser:'我越过暮色森林的山脊，沿着灯火走向那间惦记已久的林间厨房……',prose:'我越过最后一块雪松路标，在太阳落下前抵达山脊。紫色与金色的山谷在脚下展开，从高处望去，漫长的林间道路似乎也变得温柔。<br><br>下山时，我跟随一串灯笼来到那间想去很久的林间厨房。靴子沾满尘土，双腿疲惫不堪，第一口热腾腾的晚餐像是专为这段旅程写下的奖励。<br><br>有些任务以宝藏结束，而这一次，身后是一座山，面前是一只空盘子。',log:[['完成 11.8 公里山脊徒步','穿越高地雪松关'],['在日落前抵达山顶观景点','俯瞰紫罗兰山谷'],['记录 18,642 步与 860 米爬升','完成高山攀登'],['拍摄照片并写下短篇徒步感想','把山脊写入编年史'],['去了收藏已久的餐厅并品尝招牌晚餐','在灯笼厨房享用盛宴']],sum:'5 / 5 已完成 · 11.8 公里 · 爬升 860 米 · +500 经验'},
+    {date:'7月9日 · 星期三',teaser:'公会钟声响起之前，我带着细长的鱼竿来到湖边，在金色日出旁静静等待……',prose:'第一声钟响前我便醒来，带着旧雪松鱼竿沿松林小路走去，那时森林仍沉浸在蓝色的睡意中。到了湖边，我坐在栈桥尽头，把线抛进薄雾，看日光把每一道涟漪变成铜金色。<br><br>浮漂几乎没有动。但这一次，它并不像失败。我喝完带来的水，听芦苇轻响，让清晨在身边慢慢安静下来。<br><br>我没有带回鱼，却带回了一颗比来时更安稳的心。',log:[['在湖边安静垂钓 40 分钟','守望金色湖面'],['全程没有拿出手机','让遥远的魔镜沉默'],['返程前喝完一整瓶水','恢复清澈药剂'],['清洁并收好钓鱼装备','整理湖畔行囊']],sum:'4 / 4 已完成 · 户外 40 分钟 · +320 经验'},
+    {date:'7月8日 · 星期二',teaser:'雨水封住了高塔的窗，我便把夜晚变成另一种炼金术：火候、香草与耐心……',prose:'黄昏前便开始下雨，雨点敲击高塔玻璃，外出变得不再可能。于是我点燃炉火，收集储藏室剩下的食材：根茎、绿叶、蘑菇和最后一块好面包。<br><br>这锅汤需要的耐心远胜技巧。当汤汁变得浓郁、迷迭香填满房间时，原本散乱的一天也重新归位。我在窗边慢慢吃完，又为明天装好一份。<br><br>一顿好饭是一道在炉火熄灭后仍继续生效的法术。',log:[['在家做了一顿均衡的蔬菜晚餐','熬制守炉人的炖汤'],['为明天多准备了一份','封存明日补给'],['全天喝完八杯水','完成生命药剂'],['休息前清理厨房','复原炼金工作台']],sum:'4 / 4 已完成 · 准备 2 份餐食 · +340 经验'},
+    {date:'7月7日 · 星期一',teaser:'月升后，公会大厅空无一人。我一直练到那段困难的旋律终于成为音乐……',prose:'其他人离开后，我把鲁特琴带到东侧窗下的小舞台。同样的四个小节已经困扰我一周，每一次和弦变化都慢了那么一点。<br><br>我放慢水晶节拍，去掉装饰音，从头再来。第二十三遍时，双手终于不再与旋律争执，金色火花从琴弦升起，消失在屋梁之间。<br><br>今晚我不是为了听众演奏，而是一直练到努力本身变成声音。',log:[['专注练习吉他 25 分钟','调谐和声之弦'],['以慢速反复练习困难的和弦转换','掌握顽固小节'],['录制一遍完整演奏供明天复盘','保存月下旋律']],sum:'3 / 3 已完成 · 练习 25 分钟 · +260 经验'}
+  ],
+  ja:[
+    {date:'7月11日 · 金曜日',teaser:'魔法学院の試験鐘が近づくなか、私は一日を復習に捧げ、夕日がすべての頁を黄金色に染めるまで机に向かった……',prose:'試験の鐘はもうすぐ鳴る。だから今日は準備だけに時間を使った。窓辺で古い変成の法則を復習し、三頁のノートをまとめ直し、迷わず答えられるまで自分を試した。<br><br>夕日が机に差し込んだころ、ようやく静かにお茶を一杯飲んだ。窓の外では街の屋根が琥珀色に輝き、今週初めて学院の門がそれほど遠くないように思えた。<br><br>派手な冒険ではない。けれど、それ以上に大切な、誠実に過ごした一日だった。',log:[['50分の集中学習を2回完了','変成の法則を復習する'],['第7～9章を読み、一頁のノートに整理','封印された三章を解読する'],['40問の模擬試験と誤答の復習を完了','学院の試練を突破する'],['試験前7日間の復習計画を作成','学院への道を描く'],['明日の机、教材、水、カードを準備','学者の机を整える']],sum:'5 / 5 完了 · 集中 4時間35分 · +420 EXP'},
+    {date:'7月10日 · 木曜日',teaser:'黄昏の森の尾根を越えた私は、灯りに導かれ、ずっと訪れたかった森の厨房へ降りていった……',prose:'最後の杉の標を越え、日が沈む前に尾根へ着いた。眼下には紫と金色の谷が広がり、長い森の道も上から見ると穏やかに見えた。<br><br>下山途中、灯籠の列をたどって、何か月も行きたかった小さな森の厨房へ着いた。靴は土だらけで脚も疲れていたが、最初の温かな一口は旅のために用意された褒美のようだった。<br><br>宝で終わる冒険もある。今回は背後に山、目の前に空の皿が残った。',log:[['11.8kmの尾根道を完歩','高杉峠を越える'],['日没前に山頂の展望地点へ到着','紫の谷を見下ろす'],['18,642歩と標高差860mを記録','山岳登頂を完遂する'],['写真と短い登山記録を残す','尾根を年代記に刻む'],['保存していた店で名物の夕食を味わう','灯籠の厨房で祝宴を開く']],sum:'5 / 5 完了 · 11.8 KM · 標高差 860 M · +500 EXP'},
+    {date:'7月9日 · 水曜日',teaser:'ギルドの鐘が鳴る前、私は細い釣り竿を持って湖へ向かい、黄金の朝日のそばで静かに待った……',prose:'最初の鐘より早く目を覚まし、森がまだ青い眠りの中にあるうちに、古い杉の竿を持って松林の道を歩いた。湖では桟橋の端に座り、霧の向こうへ糸を投げ、朝日が波紋を銅色に変えるのを眺めた。<br><br>浮きはほとんど動かなかった。でも今回は、それを失敗とは感じなかった。持ってきた水を飲み、葦の音を聞き、朝の静けさに身を任せた。<br><br>魚は持ち帰らなかったが、来たときより穏やかな心を持ち帰った。',log:[['湖畔で40分静かに釣りをした','黄金の水面を見守る'],['携帯電話を最後まで鞄にしまった','遠い鏡を沈黙させる'],['帰る前に水を一本飲み切った','澄んだ霊薬を満たす'],['釣具を清掃して収納した','湖畔の道具を整える']],sum:'4 / 4 完了 · 屋外 40分 · +320 EXP'},
+    {date:'7月8日 · 火曜日',teaser:'雨が塔の窓を閉ざしたので、夜を別の錬金術へ変えた。火加減、香草、そして忍耐……',prose:'夕暮れ前から雨が降り、塔の窓を叩き続けた。外へ出る気にはなれず、代わりに炉へ火を入れ、貯蔵庫に残る根菜、葉野菜、茸、最後のパンを集めた。<br><br>鍋が求めたのは技術より忍耐だった。スープが深い味になり、ローズマリーが部屋を満たすころ、散らばっていた一日も整っていた。窓辺でゆっくり食べ、明日の分も詰めた。<br><br>きちんとした食事は、火が消えた後も効き続ける魔法だ。',log:[['家で栄養の整った野菜料理を作った','炉守りのシチューを煮込む'],['明日の分も一食用意した','明日の糧を封じる'],['一日で水を八杯飲んだ','生命の霊薬を完成させる'],['休む前に台所を片づけた','錬金術師の作業台を戻す']],sum:'4 / 4 完了 · 2食分を準備 · +340 EXP'},
+    {date:'7月7日 · 月曜日',teaser:'月が昇るとギルドホールは空になった。難しい一節が音楽になるまで、私はそこに残った……',prose:'皆が帰ったあと、東の窓の下にある小さな舞台へリュートを運んだ。同じ四小節が一週間も私を悩ませ、和音の移り変わりがいつもほんの少し遅れた。<br><br>水晶の拍を遅くし、装飾を外して、もう一度始めた。二十三回目に、手は旋律と争うのをやめた。金色の火花が弦から昇り、梁の間へ消えていった。<br><br>今夜は誰かに聴かせるためではなく、努力が音になるまで弾いた。',log:[['ギターを25分集中して練習','調和の弦を整える'],['難しいコード移動をゆっくり反復','頑固な小節を習得する'],['明日見直すため一回録音','月夜の旋律を保存する']],sum:'3 / 3 完了 · 練習 25分 · +260 EXP'}
+  ]
+};
+
+function applyInterfaceLanguage(lang,persist=false){
+  const c=interfaceCopy[lang]||interfaceCopy.en;
+  document.documentElement.lang=lang==='zh'?'zh-CN':lang;
+  const headers=[document.querySelector('.task-title'),document.querySelector('.qh-title'),document.querySelector('.ch-title'),document.querySelector('.cr-title')];headers.forEach((el,i)=>{if(el)el.textContent=c.headers[i]});
+  const subs=[document.querySelector('.qh-sub'),document.querySelector('.ch-sub'),document.querySelector('.cr-sub')];subs.forEach((el,i)=>{if(el)el.textContent=c.subs[i]});
+  document.querySelectorAll('.nav-label').forEach((el,i)=>el.textContent=c.nav[i%4]);
+  document.querySelectorAll('.sec-title').forEach((el,i)=>{if(c.sections[i])el.textContent=c.sections[i]});
+  document.querySelectorAll('.settings-title').forEach((el,i)=>el.textContent=c.groups[i]);
+  document.querySelectorAll('.cr-page .setting-label').forEach((el,i)=>{if(c.labels[i])el.textContent=c.labels[i]});
+  document.querySelectorAll('.cr-page .setting-desc').forEach((el,i)=>{if(c.descs[i])el.textContent=c.descs[i]});
+  const sw=document.querySelector('.role-switch');if(sw)sw.textContent=c.switchText;
+  const rt=document.querySelector('.role-panel-title');if(rt)rt.textContent=c.roleTitle;
+  const rc=document.querySelector('.role-create');if(rc)rc.textContent=c.create;
+  document.getElementById('interfaceLanguage').value=lang;
+  if(persist){try{localStorage.setItem('guildInterfaceLanguage',lang)}catch(e){};showCharacterToast(lang==='zh'?'界面语言已更新':lang==='ja'?'表示言語を変更しました':'Interface language updated');}
+}
+
+function applyStoryLanguage(lang,persist=false){
+  const source=lang==='en'?storyEntriesEnglish:storyCopy[lang];
+  source.forEach((copy,i)=>{const img=entries[i].img;Object.assign(entries[i],JSON.parse(JSON.stringify(copy)));entries[i].img=img;});
+  document.querySelectorAll('#chronicleList .record-copy').forEach(el=>el.remove());
+  hydrateExistingEntries();
+  document.querySelectorAll('#chronicleList .entry-date').forEach((el,i)=>{if(entries[i])el.textContent=entries[i].date});
+  document.getElementById('storyLanguage').value=lang;
+  if(persist){try{localStorage.setItem('guildStoryLanguage',lang)}catch(e){};showCharacterToast(lang==='zh'?'故事语言已更新':lang==='ja'?'物語の言語を変更しました':'Story language updated');}
+}
+
+function restoreLanguagePreferences(){
+  let ui='en',story='en';try{ui=localStorage.getItem('guildInterfaceLanguage')||'en';story=localStorage.getItem('guildStoryLanguage')||'en'}catch(e){}
+  applyInterfaceLanguage(ui);applyStoryLanguage(story);
+}
+
+// ── Chronicle interaction polish & complete localization ──
+function setDetailMode(raw,event){
+  if(event)event.stopPropagation();
+  chDetail.classList.toggle('raw',raw);
+  document.getElementById('detAdventureBtn').classList.toggle('active',!raw);
+  document.getElementById('detRecordBtn').classList.toggle('active',raw);
+}
+
+function enhanceChronicleCards(){
+  document.querySelectorAll('#chronicleList .entry').forEach((card,i)=>{
+    if(!entries[i])return;
+    card.onclick=()=>openEntry(i);
+    const tag=card.querySelector('.entry-viewtag');
+    if(tag&&!tag.dataset.bound){
+      tag.dataset.bound='1';
+      tag.setAttribute('role','button');
+      tag.setAttribute('tabindex','0');
+      const toggle=e=>{e.stopPropagation();toggleEntryCard(card);refreshChronicleControls();};
+      tag.addEventListener('click',toggle);
+      tag.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(e)}});
+    }
+  });
+  refreshChronicleControls();
+}
+
+function refreshChronicleControls(){
+  const lang=document.getElementById('interfaceLanguage')?.value||'en';
+  const labels={en:{adventure:'ADVENTURE',record:'TRUE RECORD',hint:'Use the buttons above to switch views'},zh:{adventure:'冒险故事',record:'真实记录',hint:'使用上方按钮切换查看方式'},ja:{adventure:'冒険物語',record:'実際の記録',hint:'上のボタンで表示を切り替えます'}}[lang];
+  document.querySelectorAll('#chronicleList .entry').forEach(card=>{const tag=card.querySelector('.entry-viewtag');if(tag)tag.textContent=card.classList.contains('raw-card')?labels.record:labels.adventure});
+  const a=document.getElementById('detAdventureBtn'),r=document.getElementById('detRecordBtn'),h=document.getElementById('detHint');if(a)a.textContent=labels.adventure;if(r)r.textContent=labels.record;if(h)h.textContent=labels.hint;
+}
+
+const extendedInterfaceCopy={
+  en:{tasks:['Study an Ancient Tome','Brew 8 Potions of Life','Complete the Lost Emblem'],taskReal:['Read for 30 minutes','Drink 8 glasses of water','Walk 5km in the park'],questNames:['Renew the Vital Draught','Scribe Arcane Thoughts','Run the Twilight Path','Prepare the Mage’s Feast','Attune the Harmonic Strings'],questReal:['Drink water','Read for 30 minutes','Run 3 kilometers','Cook a proper meal','Practice guitar 20 min'],dreams:['Conquer the Ancient Trails · 3000m','Explore the Coastal Ruins','Master All Arcane Tomes'],placeholders:['What will you accomplish today...','A dream you wish to fulfill...'],adventure:['THE DAY’S RITES ARE COMPLETE','Choose the direction of today’s report','Explore the Forest','Follow the violet lights beyond the old road','Study in the Room','Open the sealed chapter of the ancient tome','Visit the Night Market','Trade stories and supplies beneath the lanterns','Decide later'],narrative:['Epic fantasy','Warm & healing','Dark adventure','Lighthearted','Plain record'],intensity:['Immersive','Standard','Light'],display:['Day Mode','Night Mode','Minimal'],view:['Adventure','True record'],idle:['Studying an Ancient Tome','Studying'],hut:['Hut Settings','Scene','Hut','Outdoors','Forest','Lighting','Warm Hearth','Moonlit','Dawn','Decorate Hut','Visit Guild Shop'],classes:{Aelion:'TWILIGHT MAGE',Kael:'KINGDOM KNIGHT',Mira:'FOREST RANGER'},classShort:{Aelion:'Mage',Kael:'Knight',Mira:'Ranger'}},
+  zh:{tasks:['研习远古典籍','酿造八瓶生命药剂','补全失落徽记'],taskReal:['阅读 30 分钟','喝八杯水','在公园步行 5 公里'],questNames:['补充生命药剂','誊写奥术思绪','奔赴暮光之路','准备法师盛宴','调谐和声之弦'],questReal:['喝水','阅读 30 分钟','跑步 3 公里','认真做一顿饭','练习吉他 20 分钟'],dreams:['征服远古山径 · 3000米','探索海岸遗迹','精通所有奥术典籍'],placeholders:['你今天准备完成什么……','写下一个想实现的愿望……'],adventure:['今日仪式已经完成','夜幕降临，Aelion 接下来应该去哪里？','探索森林','沿着旧路外的紫色微光前进','留在房间研究','翻开远古典籍中封印的章节','前往夜市','在灯笼下交换故事与补给','稍后决定'],narrative:['史诗奇幻','温暖治愈','黑暗冒险','轻松幽默','简洁记录'],intensity:['沉浸','标准','轻度'],display:['日间模式','夜间模式','极简'],view:['冒险故事','真实记录'],idle:['研习远古典籍','研习中'],hut:['小屋设置','场景','小屋','室外','森林','灯光','温暖炉火','月夜','黎明','装扮小屋','前往公会商城'],classes:{Aelion:'暮光法师',Kael:'王国骑士',Mira:'森林游侠'},classShort:{Aelion:'法师',Kael:'骑士',Mira:'游侠'}},
+  ja:{tasks:['古代の魔導書を学ぶ','生命の霊薬を八本調合','失われた紋章を完成させる'],taskReal:['30分読書する','水を八杯飲む','公園を5km歩く'],questNames:['生命の霊薬を満たす','魔術の思索を書き記す','黄昏の道を走る','魔法使いの食卓を整える','調和の弦を整える'],questReal:['水を飲む','30分読書する','3km走る','きちんと食事を作る','ギターを20分練習する'],dreams:['古代の山道を征服 · 3000m','海岸遺跡を探索する','すべての魔導書を修める'],placeholders:['今日は何を成し遂げますか……','叶えたい夢を書いてください……'],adventure:['今日の儀式が完了しました','夜が訪れた。Aelion は次にどこへ向かう？','森を探索する','古い道の先にある紫の光を追う','部屋で研究する','古代の書の封印された章を開く','夜市を訪れる','灯籠の下で物語と物資を交換する','あとで決める'],narrative:['壮大なファンタジー','温かく癒やされる物語','ダークアドベンチャー','軽やかで楽しい物語','簡潔な記録'],intensity:['没入','標準','ライト'],display:['デイモード','ナイトモード','ミニマル'],view:['冒険物語','実際の記録'],idle:['古代の魔導書を研究中','勉強中…'],hut:['小屋の設定','シーン','小屋','屋外','森','照明','暖炉の灯り','月明かり','夜明け','小屋を飾る','ギルドショップへ'],classes:{Aelion:'黄昏の魔法使い',Kael:'王国の騎士',Mira:'森のレンジャー'},classShort:{Aelion:'魔法使い',Kael:'騎士',Mira:'レンジャー'}}
+};
+
+function applyExtendedLocalization(lang){
+  const c=extendedInterfaceCopy[lang]||extendedInterfaceCopy.en;
+  document.querySelectorAll('.task-name').forEach((el,i)=>{if(c.tasks[i])el.textContent=c.tasks[i]});
+  document.querySelectorAll('.task-orig').forEach((el,i)=>{if(c.taskReal[i])el.textContent=c.taskReal[i]});
+  document.querySelectorAll('.qcard-name').forEach((el,i)=>{if(c.questNames[i])el.textContent=c.questNames[i]});
+  document.querySelectorAll('.qcard-orig').forEach((el,i)=>{if(c.questReal[i])el.textContent=c.questReal[i]});
+  document.querySelectorAll('.dream-text').forEach((el,i)=>{if(c.dreams[i])el.textContent=c.dreams[i]});
+  document.querySelectorAll('.qinput').forEach((el,i)=>{if(c.placeholders[i])el.placeholder=c.placeholders[i]});
+  const adv=[document.querySelector('.adv-kicker'),document.querySelector('.adv-question'),...document.querySelectorAll('.adv-choice strong, .adv-choice small'),document.querySelector('.adv-later')];adv.forEach((el,i)=>{if(el&&c.adventure[i])el.textContent=c.adventure[i]});
+  const selects=document.querySelectorAll('.cr-page .setting-select');
+  const narrative=selects[2],intensity=selects[3],display=selects[6],view=selects[7];
+  if(narrative)[...narrative.options].forEach((o,i)=>o.textContent=c.narrative[i]);
+  if(intensity)[...intensity.options].forEach((o,i)=>o.textContent=c.intensity[i]);
+  if(display)[...display.options].forEach((o,i)=>o.textContent=c.display[i]);
+  if(view)[...view.options].forEach((o,i)=>o.textContent=c.view[i]);
+  const idleTitle=document.getElementById('idleTitle'),idleSub=document.getElementById('idleSub');if(idleTitle)idleTitle.textContent=c.idle[0];if(idleSub)idleSub.textContent=c.idle[1];
+  const hutNodes=document.querySelectorAll('[data-hut-copy]');hutNodes.forEach((el,i)=>{if(c.hut[i])el.textContent=c.hut[i]});
+  const inventoryCopy={en:{owned:'OWNED',shop:'GUILD SHOP',lamp:'Hearth lamp',books:'Old tomes',plant:'Moon fern',rug:'Woven rug',doll:'Guild doll'},zh:{owned:'已拥有',shop:'公会商城',lamp:'炉火灯',books:'古旧典籍',plant:'月光蕨',rug:'编织地毯',doll:'公会玩偶'},ja:{owned:'所持品',shop:'ギルドショップ',lamp:'暖炉の灯り',books:'古い魔導書',plant:'月光シダ',rug:'織り絨毯',doll:'ギルド人形'}}[lang];document.querySelectorAll('[data-inventory]').forEach(el=>{const value=inventoryCopy[el.dataset.inventory];if(value)el.textContent=value});
+  const socialCopy={en:{section:'FRIENDS & VISITORS',friends:'FRIENDS',visitors:'VISITORS',guestbook:'Open guestbook',lastVisit:'Mira left a lantern mark at your hut.',sheetTitle:'Friends & Visitors',sheetSub:'Quiet traces from travelers who visited your hut',v1:'Left a lantern mark · 2h ago',v2:'Admired your reading nook · yesterday',v3:'Sent a moonflower seed · 3d ago',visit:'Visit hut',thank:'Thank',add:'＋ Add a friend by Guild ID'},zh:{section:'好友与访客',friends:'好友',visitors:'访客',guestbook:'打开访客簿',lastVisit:'Mira 在你的小屋留下了一枚灯笼徽记。',sheetTitle:'好友与访客',sheetSub:'来访旅人在你的小屋留下的轻轻痕迹',v1:'留下灯笼徽记 · 2小时前',v2:'欣赏了你的阅读角 · 昨天',v3:'赠送了一颗月光花种子 · 3天前',visit:'访问小屋',thank:'感谢',add:'＋ 通过公会 ID 添加好友'},ja:{section:'フレンドと訪問者',friends:'フレンド',visitors:'訪問者',guestbook:'訪問帳を開く',lastVisit:'Miraが小屋にランタンの印を残しました。',sheetTitle:'フレンドと訪問者',sheetSub:'小屋を訪れた旅人が残した静かな足跡',v1:'ランタンの印を残しました · 2時間前',v2:'読書コーナーを称賛しました · 昨日',v3:'月花の種を贈りました · 3日前',visit:'小屋を訪問',thank:'お礼',add:'＋ ギルドIDでフレンドを追加'}}[lang];document.querySelectorAll('[data-social]').forEach(el=>{const value=socialCopy[el.dataset.social];if(value)el.textContent=value});
+  const backCopy={en:{back:'←',backWord:'',close:'✕'},zh:{back:'←',backWord:'',close:'✕'},ja:{back:'←',backWord:'',close:'✕'}}[lang];document.querySelectorAll('[data-back]').forEach(el=>{el.textContent=backCopy[el.dataset.back]});
+  const name=document.getElementById('roleName')?.textContent||'Aelion';
+  if(document.getElementById('roleClass'))document.getElementById('roleClass').textContent=c.classes[name]||c.classes.Aelion;
+  if(document.getElementById('characterClassValue'))document.getElementById('characterClassValue').textContent=c.classShort[name]||c.classShort.Aelion;
+  document.querySelectorAll('.role-option').forEach(el=>{const n=el.querySelector('strong')?.textContent,small=el.querySelector('small');if(n&&small)small.textContent=(c.classes[n]||'')+' · '+characterRoles[el.dataset.role].level});
+  refreshChronicleControls();
+}
+
+const originalApplyInterfaceLanguage=applyInterfaceLanguage;
+applyInterfaceLanguage=function(lang,persist=false){originalApplyInterfaceLanguage(lang,persist);applyExtendedLocalization(lang)};
+const originalApplyStoryLanguage=applyStoryLanguage;
+applyStoryLanguage=function(lang,persist=false){originalApplyStoryLanguage(lang,persist);enhanceChronicleCards()};
+const originalOpenEntry=openEntry;
+openEntry=function(i){originalOpenEntry(i);setDetailMode(false)};
+const originalSelectRole=selectRole;
+selectRole=function(key){originalSelectRole(key);applyExtendedLocalization(document.getElementById('interfaceLanguage')?.value||'en')};
+
+const localizedToasts={
+  zh:{'Backup is up to date':'备份已是最新状态','Privacy controls opened':'已打开隐私控制','Character creator coming next':'角色创建功能即将推出','Chronicle exported':'冒险日记已导出','Animations & video enabled':'动画与背景视频已开启','Animations & video disabled':'动画与背景视频已关闭','Quest notifications enabled':'任务提醒已开启','Quest notifications disabled':'任务提醒已关闭'},
+  ja:{'Backup is up to date':'バックアップは最新です','Privacy controls opened':'プライバシー設定を開きました','Character creator coming next':'キャラクター作成機能は近日公開です','Chronicle exported':'年代記を書き出しました','Animations & video enabled':'アニメーションと動画を有効にしました','Animations & video disabled':'アニメーションと動画を無効にしました','Quest notifications enabled':'クエスト通知を有効にしました','Quest notifications disabled':'クエスト通知を無効にしました'}
+};
+const originalShowCharacterToast=showCharacterToast;
+showCharacterToast=function(message){const lang=document.getElementById('interfaceLanguage')?.value||'en';originalShowCharacterToast(localizedToasts[lang]?.[message]||message)};
+
+// ── Home idle hut controls ──
+function toggleHutSettings(event){if(event)event.stopPropagation();document.getElementById('hutSettingsPanel').classList.toggle('open')}
+function closeHutPanels(){document.getElementById('hutSettingsPanel').classList.remove('open');document.getElementById('hutInventory').classList.remove('open')}
+function hutSettingChanged(select){showCharacterToast(select.options[select.selectedIndex].text);}
+function hutDemoAction(type){
+  const lang=document.getElementById('interfaceLanguage')?.value||'en';
+  const copy={en:{decorate:'Hut decorator opened',shop:'Guild Shop opened'},zh:{decorate:'已打开小屋装扮',shop:'已打开公会商城'},ja:{decorate:'小屋の模様替えを開きました',shop:'ギルドショップを開きました'}}[lang];
+  const inventory=document.getElementById('hutInventory');inventory.classList.add('open');
+  document.querySelectorAll('.inventory-tab').forEach((el,i)=>el.classList.toggle('active',type==='shop'?i===1:i===0));
+  showCharacterToast(copy[type]);document.getElementById('hutSettingsPanel').classList.remove('open');
+}
+function switchInventoryTab(button,type){document.querySelectorAll('.inventory-tab').forEach(el=>el.classList.toggle('active',el===button));if(type==='shop'){const lang=document.getElementById('interfaceLanguage')?.value||'en';showCharacterToast({en:'Guild Shop opened',zh:'已打开公会商城',ja:'ギルドショップを開きました'}[lang])}}
+function placeHutItem(button){const key=button.dataset.item,placed=button.classList.toggle('placed'),prop=document.querySelector('.hut-prop[data-prop="'+key+'"]');if(prop)prop.classList.toggle('placed',placed);const lang=document.getElementById('interfaceLanguage')?.value||'en';const copy={en:placed?'Item placed in hut':'Item returned to inventory',zh:placed?'道具已放入小屋':'道具已收回道具栏',ja:placed?'アイテムを小屋に配置しました':'アイテムを収納しました'}[lang];showCharacterToast(copy)}
+
+// ── Today’s Adventure: deliberate daily-report generation ──
+const dailyDirectionCopy={
+  en:{title:'Today’s Adventure',ready:'3 rites complete. Tap to choose the direction of today’s report.',locked:n=>n+' more '+(n===1?'rite':'rites')+' to unlock today’s report.',done:'Today’s report has been inscribed in the Chronicle.',kicker:'3 RITES COMPLETE · REPORT UNLOCKED',question:'Choose the direction of today’s report',choices:[['Heroic Journey','Emphasize completed goals, effort and momentum'],['Quiet Reflection','Focus on mood, concentration and small victories'],['Fantasy Chronicle','Turn today’s tasks into a vivid RPG adventure']],later:'Not now · no report will be created',badge:'UNLOCKED'},
+  zh:{title:'今日冒险',ready:'已完成 3 项仪式。点击选择今天的日报方向。',locked:n=>'再完成 '+n+' 项仪式即可解锁今日日报。',done:'今天的日报已经写入冒险编年史。',kicker:'已完成 3 项仪式 · 日报已解锁',question:'选择今天的日报方向',choices:[['英雄旅程','突出已完成的目标、付出的努力与前进感'],['静心回顾','聚焦情绪、专注状态与细小的胜利'],['奇幻编年史','把今天的任务写成一场完整的 RPG 冒险']],later:'暂不生成 · 不会创建日报',badge:'已解锁'},
+  ja:{title:'今日の冒険',ready:'儀式を3つ完了しました。タップして今日のレポートの方向を選びます。',locked:n=>'あと'+n+'つの儀式で今日のレポートが解放されます。',done:'今日のレポートを冒険年代記に記しました。',kicker:'儀式を3つ完了 · レポート解放',question:'今日のレポートの方向を選ぶ',choices:[['英雄の旅','達成した目標、努力、前進を中心に描く'],['静かな振り返り','気分、集中、小さな成功を中心に描く'],['幻想年代記','今日のタスクを鮮やかなRPG冒険に変える']],later:'今は作らない · レポートは生成されません',badge:'解放済み'}
+};
+
+function applyDailyDirectionCopy(lang){
+  const c=dailyDirectionCopy[lang]||dailyDirectionCopy.en;
+  const title=document.querySelector('.adv-progress-title'),note=document.getElementById('advProgressNote');if(title)title.textContent=c.title;
+  const state=getQuestState();if(note)note.textContent=adventureCreated?c.done:(state.done.length>=3?c.ready:c.locked(3-state.done.length));
+  const progress=document.getElementById('adventureProgress');if(progress){progress.classList.toggle('ready',state.done.length>=3&&!adventureCreated);progress.dataset.badge=c.badge;}
+  const kicker=document.querySelector('.adv-kicker'),question=document.querySelector('.adv-question'),later=document.querySelector('.adv-later');if(kicker)kicker.textContent=c.kicker;if(question)question.textContent=c.question;if(later)later.textContent=c.later;
+  document.querySelectorAll('.adv-choice').forEach((el,i)=>{const strong=el.querySelector('strong'),small=el.querySelector('small');if(strong)strong.textContent=c.choices[i][0];if(small)small.textContent=c.choices[i][1]});
+}
+
+const previousApplyExtendedLocalization=applyExtendedLocalization;
+applyExtendedLocalization=function(lang){previousApplyExtendedLocalization(lang);applyDailyDirectionCopy(lang)};
+const previousUpdateAdventureProgress=updateAdventureProgress;
+updateAdventureProgress=function(){previousUpdateAdventureProgress(false);applyDailyDirectionCopy(document.getElementById('interfaceLanguage')?.value||'en')};
+
+// ── Swipe ──
+let sx = 0;
+const ph = document.getElementById('phone');
+ph.addEventListener('mousedown', e=>{sx=e.clientX;});
+ph.addEventListener('mouseup', e=>{if(chDetail.classList.contains('open'))return;const dx=e.clientX-sx;if(Math.abs(dx)>50)goPage(Math.max(0,Math.min(3,cur+(dx<0?1:-1))));});
+ph.addEventListener('touchstart', e=>{sx=e.touches[0].clientX;});
+ph.addEventListener('touchend', e=>{if(chDetail.classList.contains('open'))return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)goPage(Math.max(0,Math.min(3,cur+(dx<0?1:-1))));});
+
+// ── Hut expand ──
+function toggleHut(){
+  const h=document.getElementById('hutSection'),t=document.getElementById('taskSection'),i=document.getElementById('hutIcon');
+  const exp=h.style.flexBasis==='730px';
+  if(!exp){h.classList.add('expanded');h.style.flexBasis='730px';t.style.display='none';i.innerHTML=`<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>`;}
+  else{h.classList.remove('expanded');document.getElementById('hutSettingsPanel').classList.remove('open');document.getElementById('hutInventory').classList.remove('open');h.style.flexBasis='';t.style.display='';i.innerHTML=`<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;}
+}
+
+// Portfolio demo: embedded, silent, control-free reading loop.
+function mountRoomVideo() {
+  const video = document.querySelector('.hut-bg-video');
+  if (!video) return;
+  video.loop = true;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  const start = () => video.play().then(() => video.classList.add('is-playing')).catch(() => {});
+  video.addEventListener('playing', () => video.classList.add('is-playing'));
+  video.addEventListener('loadeddata', start, {once:true});
+  ['pointerdown','touchstart','click'].forEach(type => document.addEventListener(type,start,{once:true,passive:true}));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
+  start();
+}
+
+mountRoomVideo();
+updateDateDisplay();
+hydrateExistingEntries();
+updateAdventureProgress();
+restoreLanguagePreferences();
+enhanceChronicleCards();
+</script>
+</body></html>
