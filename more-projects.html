@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XIN · More Projects</title>
+<style>
+:root{--bg:#07101b;--panel:#0b1723;--line:rgba(130,184,226,.18);--blue:#79b9e8;--text:#edf4fa;--muted:#91a3b2;--violet:#9a78d1}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Songti SC","Yu Mincho",serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background:repeating-linear-gradient(104deg,transparent 0 42px,rgba(126,174,210,.14) 42px 43px),radial-gradient(80% 55% at 70% 0,rgba(48,101,145,.4),transparent 70%)}
+.top{position:fixed;z-index:20;top:0;left:0;right:0;height:76px;padding:0 36px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(#07101bf2,#07101b80,transparent)}.brand{text-decoration:none;color:inherit;font:500 21px/1 Georgia,"Times New Roman",serif;letter-spacing:.22em}.nav{display:flex;align-items:center;gap:28px;font:13px/1.2 system-ui,sans-serif;color:var(--muted)}.nav>a{color:inherit;text-decoration:none;padding:6px 0}.nav>a:hover,.nav>a.active{color:var(--text);border-bottom:1px solid var(--blue)}.langs{display:flex;gap:8px;border-left:1px solid var(--line);padding-left:22px}.lang{border:0;background:none;padding:0;color:#627587;cursor:pointer;font:12px system-ui,sans-serif}.lang:hover,.lang.active{color:var(--blue)}.lang+.lang:before{content:"/";margin-right:8px;color:#34485a}
+main{position:relative;z-index:1;max-width:1180px;margin:auto;padding:150px 54px 110px}.back{display:inline-block;color:var(--muted);text-decoration:none;font:12px system-ui,sans-serif;margin-bottom:70px}.back:hover{color:var(--blue)}.eyebrow{font:11px system-ui,sans-serif;letter-spacing:.26em;color:var(--blue)}h1{font-size:clamp(54px,8vw,108px);font-weight:400;line-height:1;margin:24px 0 30px}.intro{max-width:720px;color:var(--muted);font-size:18px;line-height:1.8;margin-bottom:76px}
+.archive{border-top:1px solid var(--line)}.shelf{display:grid;grid-template-columns:160px 1fr auto;gap:34px;align-items:center;min-height:160px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}.shelf .num{color:#526f85;font:11px system-ui,sans-serif;letter-spacing:.18em}.shelf h2{font-size:clamp(26px,3vw,42px);font-weight:400;margin:0 0 10px}.shelf p{margin:0;color:#667c8d;font:13px/1.7 system-ui,sans-serif}.shelf .state{border:1px solid rgba(121,185,232,.28);padding:9px 12px;color:var(--blue);font:10px system-ui,sans-serif;letter-spacing:.12em}.note{margin-top:38px;color:#526b7e;font:12px/1.7 system-ui,sans-serif}
+footer{position:relative;z-index:1;padding:30px 54px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:#60788a;font:11px system-ui,sans-serif}
+@media(max-width:700px){.top{height:64px;padding:0 18px}.nav>a{display:none}.nav{gap:14px}.langs{padding-left:14px}main{padding:110px 22px 70px}.back{margin-bottom:48px}.intro{margin-bottom:52px}.shelf{grid-template-columns:1fr;gap:10px;padding:26px 0}.shelf .state{justify-self:start}.shelf .num{margin-bottom:6px}footer{padding:24px 22px}}
+</style>
+</head>
+<body>
+<header class="top"><a class="brand" href="portfolio-hero-demo.html">XIN</a><nav class="nav"><a href="experience.html" data-t="navExperience">经历</a><a class="active" href="selected-work.html" data-t="navWorks">个人作品</a><a href="portfolio-hero-demo.html#skills" data-t="navSkills">技能</a><a href="portfolio-hero-demo.html#about" data-t="navAbout">关于</a><span class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></span></nav></header>
+<main>
+  <a class="back" href="selected-work.html" data-t="back">← 返回精选项目</a>
+  <span class="eyebrow">ARCHIVE · MORE WORK</span>
+  <h1 data-t="title">更多项目</h1>
+  <p class="intro" data-t="intro">这里会收录出版物、插画、商业合作与个人实验。它们不一定属于同一种媒介，但共同记录了我持续探索视觉与故事的过程。</p>
+  <div class="archive">
+    <div class="shelf"><span class="num">ARCHIVE / 01</span><div><h2 data-t="publishing">出版物与编辑插画</h2><p data-t="publishingDesc">书籍封面、内页插画与文化教育项目。</p></div><span class="state" data-t="preparing">整理中</span></div>
+    <div class="shelf"><span class="num">ARCHIVE / 02</span><div><h2 data-t="illustration">插画与个人创作</h2><p data-t="illustrationDesc">绘画、角色、故事片段与持续进行的视觉练习。</p></div><span class="state" data-t="preparing">整理中</span></div>
+    <div class="shelf"><span class="num">ARCHIVE / 03</span><div><h2 data-t="experiments">其他实验</h2><p data-t="experimentsDesc">跨媒介概念、未完成项目与值得保留的尝试。</p></div><span class="state" data-t="preparing">整理中</span></div>
+  </div>
+  <p class="note" data-t="note">内容会随着项目资料整理逐步更新。</p>
+</main>
+<footer><span>© TONG XIN</span><span>MORE PROJECTS · 2026</span></footer>
+<script>
+const copy={
+zh:{navExperience:'经历',navWorks:'个人作品',navSkills:'技能',navAbout:'关于',back:'← 返回精选项目',title:'更多项目',intro:'这里会收录出版物、插画、商业合作与个人实验。它们不一定属于同一种媒介，但共同记录了我持续探索视觉与故事的过程。',publishing:'出版物与编辑插画',publishingDesc:'书籍封面、内页插画与文化教育项目。',illustration:'插画与个人创作',illustrationDesc:'绘画、角色、故事片段与持续进行的视觉练习。',experiments:'其他实验',experimentsDesc:'跨媒介概念、未完成项目与值得保留的尝试。',preparing:'整理中',note:'内容会随着项目资料整理逐步更新。'},
+ja:{navExperience:'経歴',navWorks:'プロジェクト',navSkills:'スキル',navAbout:'私について',back:'← 選抜プロジェクトへ戻る',title:'その他のプロジェクト',intro:'出版物、イラストレーション、商業制作、個人的な実験をまとめるアーカイブです。媒体は異なっていても、視覚と物語を探求し続けてきた過程を記録しています。',publishing:'出版物・エディトリアル',publishingDesc:'書籍の表紙、本文イラスト、文化教育プロジェクト。',illustration:'イラストレーション・個人制作',illustrationDesc:'絵画、キャラクター、物語の断片、継続的なビジュアルスタディ。',experiments:'その他の実験',experimentsDesc:'メディアを横断するコンセプト、未完成の作品、残しておきたい試み。',preparing:'整理中',note:'資料の整理に合わせて順次更新します。'},
+en:{navExperience:'Experience',navWorks:'Selected Work',navSkills:'Skills',navAbout:'About',back:'← Back to selected work',title:'More Projects',intro:'An archive for publications, illustration, commercial work, and personal experiments. The media may vary, but together they document an ongoing exploration of image and story.',publishing:'Publishing & Editorial Illustration',publishingDesc:'Book covers, interior illustration, and cultural education projects.',illustration:'Illustration & Personal Work',illustrationDesc:'Painting, characters, story fragments, and ongoing visual studies.',experiments:'Other Experiments',experimentsDesc:'Cross-media concepts, unfinished work, and attempts worth preserving.',preparing:'In progress',note:'New work will be added as the project materials are prepared.'}
+};
+function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(localStorage.getItem('tx-lang')||'zh');
+</script>
+</body></html>
