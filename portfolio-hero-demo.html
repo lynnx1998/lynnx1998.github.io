@@ -109,7 +109,7 @@
   .rain{opacity:.14;mix-blend-mode:screen}
   .rain.close{opacity:.08}
   .figure{display:none}
-  .figure-frame{position:fixed;left:50%;top:53%;width:min(980px,72vw);aspect-ratio:1672/941;
+  .figure-frame{position:fixed;left:50%;top:53%;width:min(980px,72vw,145vh);aspect-ratio:1672/941;
     transform:translate(-50%,-50%);pointer-events:auto}
   .figure-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;
     mix-blend-mode:screen}
@@ -156,6 +156,10 @@
   .hotspots .paint{left:45.5%;top:44.5%;width:9%;height:18.5%}
   .hotspots .plush{left:40.5%;top:31%;width:7.5%;height:18%}
   .hotspots .letter{left:41.5%;top:54%;width:16.5%;height:17%}
+  /* 16:9 与更宽的桌面屏幕通常相对更矮，限制人物高度，避免视觉比例过大 */
+  @media (min-width:1200px) and (min-aspect-ratio:16/9){
+    .figure-frame{width:min(860px,48vw,135vh)}
+  }
   @media(max-width:640px){
     .figure-frame{left:50%;width:175vw}
   }
