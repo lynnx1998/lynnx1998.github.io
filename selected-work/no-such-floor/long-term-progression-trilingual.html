@@ -1,0 +1,253 @@
+<style>html,body{margin:0;background:#020403;color:#f1f4ef}body{overflow-x:hidden}</style>
+<section id="nsf-meta-loop" aria-labelledby="nsf-meta-title">
+  <header class="nsf-meta-head">
+    <div>
+      <p>NO SUCH FLOOR · META PROGRESSION</p>
+      <h2 id="nsf-meta-title" data-i18n="title">长期循环与楼层深入</h2>
+    </div>
+    <div class="nsf-lang" role="group" aria-label="Language">
+      <button type="button" data-lang="zh" aria-pressed="true">中</button>
+      <button type="button" data-lang="ja" aria-pressed="false">日</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <div class="nsf-meta-rule"><span></span><strong data-i18n="rule">每个 Level 更换环境，并持续新增职业与规则</strong></div>
+
+  <svg class="nsf-meta-diagram" viewBox="0 0 1040 620" role="img" aria-labelledby="nsf-meta-svg-title nsf-meta-svg-desc">
+    <title id="nsf-meta-svg-title">NO SUCH FLOOR 长期循环</title>
+    <desc id="nsf-meta-svg-desc">六步循环由随机职业分配开始，经白天探索、物资准备、夜间身份揭晓和一对三对抗、结算，最后解锁更深楼层。每个新楼层更换环境并加入新职业和规则。</desc>
+    <defs>
+      <marker id="nsf-meta-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker>
+      <marker id="nsf-meta-arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker>
+    </defs>
+
+    <g class="nsf-grid-lines" aria-hidden="true">
+      <path d="M0 62H1040M0 186H1040M0 310H1040M0 434H1040M0 558H1040"/>
+      <path d="M130 0V620M260 0V620M390 0V620M520 0V620M650 0V620M780 0V620M910 0V620"/>
+    </g>
+
+    <g class="nsf-cycle-lines" aria-hidden="true">
+      <path d="M260 105H365"/>
+      <path d="M470 154V218"/>
+      <path d="M365 268H260"/>
+      <path d="M155 318V382"/>
+      <path d="M260 432H365"/>
+      <path d="M470 382V340C470 313 447 292 420 292H366"/>
+      <path class="nsf-cycle-return" d="M365 432H315C264 432 223 391 223 340V154C223 127 245 105 272 105"/>
+    </g>
+
+    <g class="nsf-node" transform="translate(50 55)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">01</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s1t">随机分配白天职业</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s1s">外观自定义 · 职业随机</text>
+    </g>
+    <g class="nsf-node" transform="translate(365 55)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">02</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s2t">白天自由活动</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s2s">轻量工作 · 探索 · 社交</text>
+    </g>
+    <g class="nsf-node nsf-node-green" transform="translate(365 218)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">03</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s3t">发现异常并准备物资</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s3s">工具 · 线索 · 当前地图信息</text>
+    </g>
+    <g class="nsf-node nsf-node-red" transform="translate(50 218)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">04</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s4t">夜间身份揭晓与 1v3</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s4s">1 名追捕者 · 3 名逃亡者</text>
+    </g>
+    <g class="nsf-node nsf-node-red" transform="translate(50 382)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">05</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s5t">逃脱／被捕与积分结算</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s5s">结算对局表现与楼层积分</text>
+    </g>
+    <g class="nsf-node nsf-node-green" transform="translate(365 382)">
+      <rect width="210" height="100"/>
+      <text class="nsf-num" x="18" y="24">06</text>
+      <text class="nsf-node-title" x="18" y="53" data-i18n="s6t">解锁更深楼层</text>
+      <text class="nsf-node-sub" x="18" y="78" data-i18n="s6s">新环境 · 新身份 · 新规则</text>
+    </g>
+
+    <g class="nsf-persistent" transform="translate(285 258)">
+      <rect width="120" height="104"/>
+      <text x="60" y="23" text-anchor="middle" class="nsf-persistent-kicker">ACCOUNT</text>
+      <text x="60" y="46" text-anchor="middle" class="nsf-persistent-title" data-i18n="account">玩家长期进度</text>
+      <text x="60" y="70" text-anchor="middle" data-i18n="account1">等级与积分</text>
+      <text x="60" y="89" text-anchor="middle" data-i18n="account2">身份／档案解锁</text>
+    </g>
+
+    <path class="nsf-depth-link" d="M575 432H638" aria-hidden="true"/>
+    <g class="nsf-floor-rail" transform="translate(665 48)">
+      <text class="nsf-rail-kicker" x="0" y="0">FLOOR DEPTH</text>
+      <line x1="14" y1="35" x2="14" y2="505"/>
+
+      <circle class="nsf-active" cx="14" cy="70" r="7"/>
+      <text class="nsf-level" x="40" y="65">LEVEL 1</text>
+      <text class="nsf-env" x="40" y="88" data-i18n="l0">办公楼层</text>
+      <text class="nsf-detail" x="40" y="109" data-i18n="l0d">基础职业组与办公规则</text>
+
+      <circle cx="14" cy="185" r="7"/>
+      <text class="nsf-level" x="40" y="180">LEVEL 2</text>
+      <text class="nsf-env" x="40" y="203" data-i18n="l1">夜间列车</text>
+      <text class="nsf-detail" x="40" y="224" data-i18n="l1d">新环境 · 新增职业</text>
+
+      <circle cx="14" cy="300" r="7"/>
+      <text class="nsf-level" x="40" y="295">LEVEL 3</text>
+      <text class="nsf-env" x="40" y="318" data-i18n="l2">室内水域设施</text>
+      <text class="nsf-detail" x="40" y="339" data-i18n="l2d">新空间结构 · 新规则</text>
+
+      <circle cx="14" cy="415" r="7"/>
+      <text class="nsf-level" x="40" y="410">LEVEL N</text>
+      <text class="nsf-env" x="40" y="433" data-i18n="ln">未知环境</text>
+      <text class="nsf-detail" x="40" y="454" data-i18n="lnd">职业、规则与难度持续扩展</text>
+
+      <path class="nsf-rail-arrow" d="M14 505V555"/>
+      <text class="nsf-rail-end" x="40" y="535" data-i18n="deeper">继续下沉</text>
+    </g>
+  </svg>
+
+  <ol class="nsf-meta-mobile" aria-label="Meta progression steps">
+    <li><b>01</b><div><strong data-i18n="s1t">随机分配白天职业</strong><span data-i18n="s1s">外观自定义 · 职业随机</span></div></li>
+    <li><b>02</b><div><strong data-i18n="s2t">白天自由活动</strong><span data-i18n="s2s">轻量工作 · 探索 · 社交</span></div></li>
+    <li><b>03</b><div><strong data-i18n="s3t">发现异常并准备物资</strong><span data-i18n="s3s">工具 · 线索 · 当前地图信息</span></div></li>
+    <li class="nsf-mobile-red"><b>04</b><div><strong data-i18n="s4t">夜间身份揭晓与 1v3</strong><span data-i18n="s4s">1 名追捕者 · 3 名逃亡者</span></div></li>
+    <li><b>05</b><div><strong data-i18n="s5t">逃脱／被捕与积分结算</strong><span data-i18n="s5s">结算对局表现与楼层积分</span></div></li>
+    <li class="nsf-mobile-green"><b>06</b><div><strong data-i18n="s6t">解锁更深楼层</strong><span data-i18n="s6s">新环境 · 新身份 · 新规则</span></div></li>
+  </ol>
+
+  <div class="nsf-mobile-floors">
+    <p>FLOOR DEPTH</p>
+    <div><b>LEVEL 1</b><span data-i18n="l0">办公楼层</span></div>
+    <div><b>LEVEL 2</b><span data-i18n="l1">夜间列车</span></div>
+    <div><b>LEVEL 3</b><span data-i18n="l2">室内水域设施</span></div>
+    <div><b>LEVEL N</b><span data-i18n="ln">未知环境</span></div>
+  </div>
+</section>
+
+<style>
+  #nsf-meta-loop {
+    --nsf-bg:#020403; --nsf-panel:#050806; --nsf-panel-2:#0a100c; --nsf-fg:#f1f4ef;
+    --nsf-muted:#a7afa9; --nsf-line:#344b3c; --nsf-green:#79b68e; --nsf-red:#b96e6b;
+    width:100%; box-sizing:border-box; padding:24px; color:var(--nsf-fg); background:var(--nsf-bg);
+    font-family:Arial,"PingFang SC","Noto Sans CJK SC",sans-serif;
+  }
+  #nsf-meta-loop * { box-sizing:border-box; }
+  #nsf-meta-loop .nsf-meta-head { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; }
+  #nsf-meta-loop .nsf-meta-head p { margin:0 0 5px; color:var(--nsf-muted); font-size:11px; letter-spacing:.19em; }
+  #nsf-meta-loop .nsf-meta-head h2 { margin:0; font-size:21px; font-weight:500; letter-spacing:.02em; }
+  #nsf-meta-loop .nsf-lang { display:flex; border:1px solid var(--nsf-green); }
+  #nsf-meta-loop .nsf-lang button { min-width:44px; border:0; border-right:1px solid var(--nsf-green); padding:7px 10px; color:var(--nsf-muted); background:transparent; font:inherit; cursor:pointer; }
+  #nsf-meta-loop .nsf-lang button:last-child { border-right:0; }
+  #nsf-meta-loop .nsf-lang button[aria-pressed="true"] { color:var(--nsf-bg); background:var(--nsf-green); }
+  #nsf-meta-loop .nsf-meta-rule { display:flex; align-items:center; gap:10px; margin-top:17px; color:var(--nsf-muted); font-size:12px; }
+  #nsf-meta-loop .nsf-meta-rule span { width:28px; height:1px; background:var(--nsf-green); }
+  #nsf-meta-loop .nsf-meta-rule strong { font-weight:400; letter-spacing:.035em; }
+  #nsf-meta-loop .nsf-meta-diagram { display:block; width:100%; height:auto; margin-top:8px; }
+  #nsf-meta-loop .nsf-grid-lines path { fill:none; stroke:var(--nsf-green); stroke-width:.6; opacity:.13; }
+  #nsf-meta-loop .nsf-cycle-lines path { fill:none; stroke:var(--nsf-muted); stroke-width:1.2; marker-end:url(#nsf-meta-arrow); }
+  #nsf-meta-loop .nsf-cycle-lines .nsf-cycle-return { stroke:var(--nsf-green); marker-end:url(#nsf-meta-arrow-green); }
+  #nsf-meta-loop #nsf-meta-arrow path { fill:var(--nsf-muted); }
+  #nsf-meta-loop #nsf-meta-arrow-green path { fill:var(--nsf-green); }
+  #nsf-meta-loop .nsf-node rect { fill:var(--nsf-bg); stroke:var(--nsf-green); stroke-width:1.25; rx:3; }
+  #nsf-meta-loop .nsf-node-green rect { fill:var(--nsf-panel-2); stroke:var(--nsf-green); }
+  #nsf-meta-loop .nsf-node-red rect { fill:var(--nsf-bg); stroke:var(--nsf-green); }
+  #nsf-meta-loop .nsf-node text { fill:var(--nsf-fg); font-size:14px; font-weight:500; }
+  #nsf-meta-loop .nsf-node .nsf-num { fill:var(--nsf-muted); font-size:10px; letter-spacing:.16em; }
+  #nsf-meta-loop .nsf-node-green .nsf-num { fill:var(--nsf-green); }
+  #nsf-meta-loop .nsf-node-red .nsf-num { fill:var(--nsf-red); }
+  #nsf-meta-loop .nsf-node .nsf-node-sub { fill:var(--nsf-muted); font-size:11px; font-weight:400; }
+  #nsf-meta-loop .nsf-persistent rect { fill:var(--nsf-bg); stroke:var(--nsf-green); stroke-width:1.2; rx:60; }
+  #nsf-meta-loop .nsf-persistent text { fill:var(--nsf-muted); font-size:10px; }
+  #nsf-meta-loop .nsf-persistent .nsf-persistent-kicker { fill:var(--nsf-green); font-size:9px; letter-spacing:.14em; }
+  #nsf-meta-loop .nsf-persistent .nsf-persistent-title { fill:var(--nsf-fg); font-size:12px; font-weight:500; }
+  #nsf-meta-loop .nsf-depth-link { fill:none; stroke:var(--nsf-green); stroke-width:1.2; marker-end:url(#nsf-meta-arrow-green); }
+  #nsf-meta-loop .nsf-floor-rail line { stroke:var(--nsf-green); stroke-width:1.5; }
+  #nsf-meta-loop .nsf-floor-rail circle { fill:var(--nsf-bg); stroke:var(--nsf-green); stroke-width:1.5; }
+  #nsf-meta-loop .nsf-floor-rail .nsf-active { fill:var(--nsf-green); stroke:var(--nsf-green); }
+  #nsf-meta-loop .nsf-floor-rail text { fill:var(--nsf-fg); }
+  #nsf-meta-loop .nsf-floor-rail .nsf-rail-kicker { fill:var(--nsf-muted); font-size:10px; letter-spacing:.18em; }
+  #nsf-meta-loop .nsf-floor-rail .nsf-level { font-size:11px; letter-spacing:.12em; }
+  #nsf-meta-loop .nsf-floor-rail .nsf-env { fill:var(--nsf-fg); font-size:14px; font-weight:500; }
+  #nsf-meta-loop .nsf-floor-rail .nsf-detail { fill:var(--nsf-muted); font-size:11px; }
+  #nsf-meta-loop .nsf-floor-rail .nsf-rail-arrow { fill:none; stroke:var(--nsf-muted); stroke-width:1.2; marker-end:url(#nsf-meta-arrow); }
+  #nsf-meta-loop .nsf-floor-rail .nsf-rail-end { fill:var(--nsf-muted); font-size:11px; }
+  #nsf-meta-loop .nsf-meta-mobile, #nsf-meta-loop .nsf-mobile-floors { display:none; }
+  @media (max-width:600px) {
+    #nsf-meta-loop { padding:18px; }
+    #nsf-meta-loop .nsf-meta-head { align-items:flex-start; flex-direction:column; }
+    #nsf-meta-loop .nsf-meta-diagram { display:none; }
+    #nsf-meta-loop .nsf-meta-mobile { display:block; list-style:none; margin:18px 0 0; padding:0; }
+    #nsf-meta-loop .nsf-meta-mobile li { display:grid; grid-template-columns:30px 1fr; gap:10px; padding:12px 0; border-bottom:1px solid var(--nsf-line); }
+    #nsf-meta-loop .nsf-meta-mobile b { color:var(--nsf-muted); font-weight:500; }
+    #nsf-meta-loop .nsf-meta-mobile div { display:flex; flex-direction:column; gap:4px; }
+    #nsf-meta-loop .nsf-meta-mobile strong { font-weight:500; }
+    #nsf-meta-loop .nsf-meta-mobile span { color:var(--nsf-muted); font-size:12px; }
+    #nsf-meta-loop .nsf-meta-mobile .nsf-mobile-red { border-left:2px solid var(--nsf-red); padding-left:10px; }
+    #nsf-meta-loop .nsf-meta-mobile .nsf-mobile-green { border-left:2px solid var(--nsf-green); padding-left:10px; }
+    #nsf-meta-loop .nsf-mobile-floors { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:20px; background:var(--nsf-line); }
+    #nsf-meta-loop .nsf-mobile-floors > p { grid-column:1/-1; margin:0; padding:10px 0; color:var(--nsf-muted); background:var(--nsf-bg); font-size:10px; letter-spacing:.18em; }
+    #nsf-meta-loop .nsf-mobile-floors div { display:flex; flex-direction:column; gap:5px; padding:12px; background:var(--nsf-panel); }
+    #nsf-meta-loop .nsf-mobile-floors b { font-size:10px; letter-spacing:.12em; font-weight:500; }
+    #nsf-meta-loop .nsf-mobile-floors span { color:var(--nsf-muted); font-size:12px; }
+  }
+</style>
+
+<script>
+(() => {
+  const root = document.getElementById('nsf-meta-loop');
+  const copy = {
+    zh: {
+      title:'长期循环与楼层深入', rule:'每个 Level 更换环境，并持续新增职业与规则',
+      s1t:'随机分配白天职业', s1s:'外观自定义 · 职业随机',
+      s2t:'白天自由活动', s2s:'轻量工作 · 探索 · 社交',
+      s3t:'发现异常并准备物资', s3s:'工具 · 线索 · 当前地图信息',
+      s4t:'夜间身份揭晓与 1v3', s4s:'1 名追捕者 · 3 名逃亡者',
+      s5t:'逃脱／被捕与积分结算', s5s:'结算对局表现与楼层积分',
+      s6t:'解锁更深楼层', s6s:'新环境 · 新身份 · 新规则',
+      account:'玩家长期进度', account1:'等级与积分', account2:'身份／档案解锁',
+      l0:'办公楼层', l0d:'基础职业组与办公规则', l1:'夜间列车', l1d:'新环境 · 新增职业',
+      l2:'室内水域设施', l2d:'新空间结构 · 新规则', ln:'未知环境', lnd:'职业、规则与难度持续扩展', deeper:'继续下沉'
+    },
+    ja: {
+      title:'長期ループと階層進行', rule:'レベルごとに環境が変わり、職業とルールが追加される',
+      s1t:'昼の職業をランダム配属', s1s:'外見は自由 · 職業はランダム',
+      s2t:'昼の自由行動', s2s:'軽作業 · 探索 · 交流',
+      s3t:'異常を発見し物資を準備', s3s:'道具 · 手掛かり · 現在のマップ情報',
+      s4t:'夜の役割公開と 1v3', s4s:'追跡者 1 名 · 逃亡者 3 名',
+      s5t:'脱出／捕獲とスコア精算', s5s:'試合結果とフロアポイントを精算',
+      s6t:'より深いフロアを解放', s6s:'新環境 · 新役割 · 新ルール',
+      account:'プレイヤー進行', account1:'レベルとポイント', account2:'役割／アーカイブ解放',
+      l0:'オフィスフロア', l0d:'基本職業とオフィスルール', l1:'夜行列車', l1d:'新環境 · 新職業',
+      l2:'屋内水域施設', l2d:'新しい空間構造 · 新ルール', ln:'未知の環境', lnd:'職業・ルール・難易度が拡張', deeper:'さらに深くへ'
+    },
+    en: {
+      title:'Long-Term Loop & Floor Progression', rule:'Each level introduces a new environment, professions, and rules',
+      s1t:'Random Day Profession', s1s:'Custom appearance · Random profession',
+      s2t:'Free Daytime Activity', s2s:'Light work · Exploration · Social play',
+      s3t:'Find Anomalies & Prepare', s3s:'Tools · Clues · Current map information',
+      s4t:'Night Roles Revealed · 1v3', s4s:'1 Host · 3 Intruders',
+      s5t:'Escape/Capture & Scoring', s5s:'Settle match performance and floor score',
+      s6t:'Unlock a Deeper Floor', s6s:'New environment · Identities · Rules',
+      account:'Account Progress', account1:'Level and score', account2:'Identity/archive unlocks',
+      l0:'Office Complex', l0d:'Base professions and office rules', l1:'Night Train', l1d:'New environment · New professions',
+      l2:'Indoor Aquatic Facility', l2d:'New spatial structure · New rules', ln:'Unknown Environment', lnd:'Expanding professions, rules, and difficulty', deeper:'Descend further'
+    }
+  };
+  const setLanguage = (lang) => {
+    root.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.dataset.i18n;
+      if (copy[lang][key]) el.textContent = copy[lang][key];
+    });
+    root.querySelectorAll('[data-lang]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.lang === lang)));
+    root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja' : 'en');
+  };
+  root.querySelectorAll('[data-lang]').forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.lang)));
+  setLanguage(new URLSearchParams(window.location.search).get('lang') || 'zh');
+})();
+</script>

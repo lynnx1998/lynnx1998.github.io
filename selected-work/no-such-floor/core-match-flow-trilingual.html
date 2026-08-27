@@ -1,0 +1,268 @@
+<style>html,body{margin:0;background:#020403;color:#f1f4ef}body{overflow-x:hidden}</style>
+<div id="nsf-flow-minimal">
+  <div class="viz-row nsf-controls" aria-label="Language and export controls">
+    <div class="nsf-languages" role="group" aria-label="Language">
+      <button type="button" class="btn btn-primary" data-lang="zh" aria-pressed="true">中文</button>
+      <button type="button" class="btn" data-lang="ja" aria-pressed="false">日本語</button>
+      <button type="button" class="btn" data-lang="en" aria-pressed="false">English</button>
+    </div>
+    <button type="button" class="btn btn-ghost" id="nsf-flow-download"><i data-lucide="download" aria-hidden="true"></i><span data-ui="download">下载 SVG</span></button>
+  </div>
+
+  <svg id="nsf-flow-svg" class="nsf-desktop" viewBox="0 0 1600 470" role="img" aria-labelledby="nsf-title nsf-desc">
+    <title id="nsf-title">NO SUCH FLOOR — Core Match Flow</title>
+    <desc id="nsf-desc">A horizontal match flow from daytime preparation through the one-versus-three night phase to escape or capture.</desc>
+    <defs>
+      <marker id="nsf-arrow-neutral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker>
+      <marker id="nsf-arrow-host" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker>
+      <marker id="nsf-arrow-intr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker>
+      <radialGradient id="nsf-night-field" cx="52%" cy="42%" r="78%">
+        <stop offset="0" class="nsf-night-stop-lift"/>
+        <stop offset="1" class="nsf-night-stop-deep"/>
+      </radialGradient>
+      <pattern id="nsf-night-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+        <path d="M48 0H0V48" class="nsf-grid-line"/>
+      </pattern>
+    </defs>
+
+    <rect width="1600" height="470" fill="url(#nsf-night-field)"/>
+    <rect width="1600" height="470" fill="url(#nsf-night-grid)" class="nsf-grid-field"/>
+
+    <text x="18" y="25" class="nsf-kicker">NO SUCH FLOOR / SYSTEM 01</text>
+    <text x="18" y="54" class="nsf-heading" data-key="title"></text>
+    <text x="1582" y="52" text-anchor="end" class="nsf-caption" data-key="subtitle"></text>
+
+    <g class="nsf-stage">
+      <text x="20" y="98" class="nsf-stage-index">01</text>
+      <text x="52" y="98" class="nsf-stage-name" data-key="dayPhase"></text>
+      <path d="M20 112H235V395H20Z" class="nsf-stage-frame"/>
+      <rect x="50" y="143" width="155" height="50" rx="4" class="nsf-node-neutral"/>
+      <text x="127.5" y="173" text-anchor="middle" class="nsf-node-text" data-key="role"></text>
+      <path d="M127.5 193V219" class="nsf-line-neutral"/>
+      <rect x="50" y="220" width="155" height="62" rx="4" class="nsf-node-neutral-soft"/>
+      <text x="127.5" y="247" text-anchor="middle" class="nsf-node-text-dark" data-key="dayAct"></text>
+      <path d="M127.5 282V308" class="nsf-line-neutral"/>
+      <rect x="50" y="309" width="155" height="56" rx="4" class="nsf-node-neutral-soft"/>
+      <text x="127.5" y="335" text-anchor="middle" class="nsf-node-text-dark" data-key="dayGain"></text>
+    </g>
+
+    <path d="M235 252H270" class="nsf-line-neutral"/>
+    <g>
+      <path d="M325 202 375 252 325 302 275 252Z" class="nsf-diamond"/>
+      <text x="325" y="247" text-anchor="middle" class="nsf-node-text" data-key="nightfall"></text>
+      <text x="325" y="269" text-anchor="middle" class="nsf-node-text" data-key="splitShort"></text>
+    </g>
+    <path d="M375 252H418" class="nsf-line-neutral"/>
+
+    <g class="nsf-stage">
+      <text x="420" y="98" class="nsf-stage-index">02</text>
+      <text x="452" y="98" class="nsf-stage-name" data-key="nightPhase"></text>
+      <path d="M420 112H1075V395H420Z" class="nsf-stage-frame"/>
+
+      <text x="446" y="142" class="nsf-lane-label nsf-intr-label" data-key="intruders"></text>
+      <rect x="446" y="158" width="112" height="54" rx="4" class="nsf-node-intr"/>
+      <text x="502" y="190" text-anchor="middle" class="nsf-node-text-dark" data-key="explore"></text>
+      <path d="M558 185H582" class="nsf-line-intr"/>
+      <rect x="583" y="158" width="112" height="54" rx="4" class="nsf-node-intr"/>
+      <text x="639" y="181" text-anchor="middle" class="nsf-node-text-dark" data-key="ability"></text>
+      <path d="M695 185H719" class="nsf-line-intr"/>
+      <rect x="720" y="158" width="112" height="54" rx="4" class="nsf-node-intr"/>
+      <text x="776" y="181" text-anchor="middle" class="nsf-node-text-dark" data-key="collect"></text>
+      <path d="M832 185H856" class="nsf-line-intr"/>
+      <rect x="857" y="158" width="90" height="54" rx="4" class="nsf-node-intr"/>
+      <text x="902" y="181" text-anchor="middle" class="nsf-node-text-dark" data-key="rules"></text>
+      <path d="M947 185H971" class="nsf-line-intr"/>
+      <rect x="972" y="158" width="78" height="54" rx="4" class="nsf-node-intr-strong"/>
+      <text x="1011" y="181" text-anchor="middle" class="nsf-node-text" data-key="assemble"></text>
+
+      <text x="446" y="278" class="nsf-lane-label nsf-host-label" data-key="host"></text>
+      <rect x="446" y="294" width="128" height="54" rx="4" class="nsf-node-host"/>
+      <text x="510" y="317" text-anchor="middle" class="nsf-node-text-dark" data-key="know"></text>
+      <path d="M574 321H598" class="nsf-line-host"/>
+      <rect x="599" y="294" width="112" height="54" rx="4" class="nsf-node-host"/>
+      <text x="655" y="317" text-anchor="middle" class="nsf-node-text-dark" data-key="predict"></text>
+      <path d="M711 321H735" class="nsf-line-host"/>
+      <rect x="736" y="294" width="128" height="54" rx="4" class="nsf-node-host"/>
+      <text x="800" y="317" text-anchor="middle" class="nsf-node-text-dark" data-key="control"></text>
+      <path d="M864 321H888" class="nsf-line-host"/>
+      <rect x="889" y="294" width="128" height="54" rx="4" class="nsf-node-host-strong"/>
+      <text x="953" y="317" text-anchor="middle" class="nsf-node-text" data-key="capture"></text>
+
+      <path d="M776 212C776 251 655 251 655 294" class="nsf-line-signal"/>
+      <text x="716" y="250" text-anchor="middle" class="nsf-signal-text" data-key="alert"></text>
+    </g>
+
+    <path d="M1050 185H1106" class="nsf-line-intr"/>
+    <path d="M1017 321C1062 321 1071 279 1108 255" class="nsf-line-host"/>
+    <g>
+      <path d="M1155 205 1205 255 1155 305 1105 255Z" class="nsf-diamond"/>
+      <text x="1155" y="250" text-anchor="middle" class="nsf-node-text" data-key="exit"></text>
+      <text x="1155" y="271" text-anchor="middle" class="nsf-node-text" data-key="lastChase"></text>
+    </g>
+    <path d="M1205 255H1232" class="nsf-line-neutral"/>
+    <rect x="1233" y="226" width="118" height="58" rx="4" class="nsf-node-neutral"/>
+    <text x="1292" y="250" text-anchor="middle" class="nsf-node-text" data-key="resolve"></text>
+    <path d="M1351 255H1376" class="nsf-line-neutral"/>
+    <g>
+      <path d="M1422 209 1468 255 1422 301 1376 255Z" class="nsf-diamond"/>
+      <text x="1422" y="250" text-anchor="middle" class="nsf-node-text" data-key="result"></text>
+    </g>
+    <path d="M1468 255H1493" class="nsf-line-neutral"/>
+    <rect x="1494" y="226" width="88" height="58" rx="4" class="nsf-node-neutral-soft"/>
+    <text x="1538" y="250" text-anchor="middle" class="nsf-node-text-dark" data-key="deeper"></text>
+
+    <path d="M1422 209V169H1500" class="nsf-branch-intr"/>
+    <text x="1462" y="158" text-anchor="middle" class="nsf-branch-label nsf-intr-label" data-key="intrWin"></text>
+    <path d="M1422 301V341H1500" class="nsf-branch-host"/>
+    <text x="1462" y="363" text-anchor="middle" class="nsf-branch-label nsf-host-label" data-key="hostWin"></text>
+
+    <text x="20" y="438" class="nsf-footer" data-key="principle"></text>
+    <text x="1582" y="438" text-anchor="end" class="nsf-footer">4 PLAYERS · 1 FLOOR · 1 HIDDEN STRUCTURE</text>
+  </svg>
+
+  <div class="nsf-mobile" aria-live="polite">
+    <h2 data-key="title"></h2>
+    <p class="text-muted" data-key="subtitle"></p>
+    <ol class="nsf-mobile-flow">
+      <li><strong data-key="dayPhase"></strong><span data-key="dayAct"></span><span data-key="dayGain"></span></li>
+      <li><strong data-key="nightfall"></strong><span data-key="split"></span></li>
+      <li class="nsf-mobile-intr"><strong data-key="intruders"></strong><span data-key="explore"></span><span data-key="collect"></span><span data-key="assemble"></span></li>
+      <li class="nsf-mobile-host"><strong data-key="host"></strong><span data-key="know"></span><span data-key="control"></span><span data-key="capture"></span></li>
+      <li><strong data-key="exit"></strong><span data-key="resultLong"></span><span data-key="deeper"></span></li>
+    </ol>
+  </div>
+</div>
+
+<style id="nsf-flow-styles">
+  #nsf-flow-minimal {
+    --nsf-bg:#090b0a;
+    --nsf-bg-lift:#121715;
+    --nsf-fg:#e3e6df;
+    --nsf-muted:#858c87;
+    --nsf-border:#2d3430;
+    --nsf-panel:#151a17;
+    --nsf-panel-soft:#1b211e;
+    --nsf-green:#6f8877;
+    --nsf-green-soft:#1d2922;
+    --nsf-green-strong:#344a3c;
+    --nsf-red:#95605e;
+    --nsf-red-soft:#2b1e1e;
+    --nsf-red-strong:#5a3433;
+    width:100%;
+    color:var(--foreground);
+  }
+  #nsf-flow-minimal .nsf-controls { justify-content:space-between; margin-bottom:12px; }
+  #nsf-flow-minimal .nsf-languages { display:flex; gap:8px; flex-wrap:wrap; }
+  #nsf-flow-minimal #nsf-flow-download { gap:6px; }
+  #nsf-flow-minimal .nsf-desktop { display:block; width:100%; height:auto; }
+  #nsf-flow-minimal .nsf-mobile { display:none; }
+  #nsf-flow-minimal .nsf-night-stop-lift { stop-color:var(--nsf-bg-lift); }
+  #nsf-flow-minimal .nsf-night-stop-deep { stop-color:var(--nsf-bg); }
+  #nsf-flow-minimal .nsf-grid-line { fill:none; stroke:var(--nsf-border); stroke-width:.6; }
+  #nsf-flow-minimal .nsf-grid-field { opacity:.22; }
+  #nsf-flow-minimal .nsf-kicker { fill:var(--nsf-muted); font-size:11px; font-weight:500; letter-spacing:2.8px; }
+  #nsf-flow-minimal .nsf-heading { fill:var(--nsf-fg); font-size:21px; font-weight:500; letter-spacing:.3px; }
+  #nsf-flow-minimal .nsf-caption { fill:var(--nsf-muted); font-size:11px; }
+  #nsf-flow-minimal .nsf-stage-index { fill:var(--nsf-muted); font-size:11px; letter-spacing:1px; }
+  #nsf-flow-minimal .nsf-stage-name { fill:var(--nsf-fg); font-size:12px; font-weight:500; letter-spacing:1.4px; }
+  #nsf-flow-minimal .nsf-stage-frame { fill:color-mix(in srgb, var(--nsf-panel) 38%, transparent); stroke:var(--nsf-border); stroke-width:1; }
+  #nsf-flow-minimal .nsf-lane-label { font-size:11px; font-weight:500; letter-spacing:1.2px; }
+  #nsf-flow-minimal .nsf-intr-label { fill:var(--nsf-green); }
+  #nsf-flow-minimal .nsf-host-label { fill:var(--nsf-red); }
+  #nsf-flow-minimal .nsf-node-neutral { fill:var(--nsf-fg); }
+  #nsf-flow-minimal .nsf-node-neutral-soft { fill:var(--nsf-panel-soft); stroke:var(--nsf-border); stroke-width:1; }
+  #nsf-flow-minimal .nsf-node-intr { fill:var(--nsf-green-soft); stroke:var(--nsf-green); stroke-width:1; }
+  #nsf-flow-minimal .nsf-node-intr-strong { fill:var(--nsf-green-strong); }
+  #nsf-flow-minimal .nsf-node-host { fill:var(--nsf-red-soft); stroke:var(--nsf-red); stroke-width:1; }
+  #nsf-flow-minimal .nsf-node-host-strong { fill:var(--nsf-red-strong); }
+  #nsf-flow-minimal .nsf-diamond { fill:var(--nsf-fg); }
+  #nsf-flow-minimal .nsf-node-text { fill:var(--nsf-bg); font-size:11px; font-weight:500; }
+  #nsf-flow-minimal .nsf-node-text-dark { fill:var(--nsf-fg); font-size:11px; font-weight:500; }
+  #nsf-flow-minimal .nsf-line-neutral, #nsf-flow-minimal .nsf-line-intr, #nsf-flow-minimal .nsf-line-host { fill:none; stroke-width:1.25; }
+  #nsf-flow-minimal .nsf-line-neutral { stroke:var(--nsf-muted); marker-end:url(#nsf-arrow-neutral); }
+  #nsf-flow-minimal .nsf-line-intr { stroke:var(--nsf-green); marker-end:url(#nsf-arrow-intr); }
+  #nsf-flow-minimal .nsf-line-host { stroke:var(--nsf-red); marker-end:url(#nsf-arrow-host); }
+  #nsf-flow-minimal #nsf-arrow-neutral path { fill:var(--nsf-muted); }
+  #nsf-flow-minimal #nsf-arrow-intr path { fill:var(--nsf-green); }
+  #nsf-flow-minimal #nsf-arrow-host path { fill:var(--nsf-red); }
+  #nsf-flow-minimal .nsf-line-signal { fill:none; stroke:var(--nsf-red); stroke-width:1; stroke-dasharray:3 4; marker-end:url(#nsf-arrow-host); }
+  #nsf-flow-minimal .nsf-signal-text { fill:var(--nsf-muted); font-size:10px; }
+  #nsf-flow-minimal .nsf-branch-intr, #nsf-flow-minimal .nsf-branch-host { fill:none; stroke-width:1; }
+  #nsf-flow-minimal .nsf-branch-intr { stroke:var(--nsf-green); }
+  #nsf-flow-minimal .nsf-branch-host { stroke:var(--nsf-red); }
+  #nsf-flow-minimal .nsf-branch-label { font-size:10px; font-weight:500; }
+  #nsf-flow-minimal .nsf-footer { fill:var(--nsf-muted); font-size:10px; letter-spacing:1.1px; }
+  #nsf-flow-minimal .nsf-mobile-flow { margin:0; padding-left:24px; display:grid; gap:12px; }
+  #nsf-flow-minimal .nsf-mobile { background:var(--nsf-bg); color:var(--nsf-fg); padding:16px; }
+  #nsf-flow-minimal .nsf-mobile .text-muted { color:var(--nsf-muted); }
+  #nsf-flow-minimal .nsf-mobile-flow li { padding:12px 0; border-bottom:1px solid var(--nsf-border); }
+  #nsf-flow-minimal .nsf-mobile-flow strong, #nsf-flow-minimal .nsf-mobile-flow span { display:block; }
+  #nsf-flow-minimal .nsf-mobile-flow span { color:var(--nsf-muted); margin-top:4px; }
+  #nsf-flow-minimal .nsf-mobile-intr { border-left:3px solid var(--nsf-green); padding-left:12px !important; }
+  #nsf-flow-minimal .nsf-mobile-host { border-left:3px solid var(--nsf-red); padding-left:12px !important; }
+  @media (max-width:620px) {
+    #nsf-flow-minimal .nsf-controls { align-items:flex-start; }
+    #nsf-flow-minimal .nsf-desktop { display:none; }
+    #nsf-flow-minimal .nsf-mobile { display:block; }
+  }
+</style>
+
+<script>
+(() => {
+  const root = document.getElementById('nsf-flow-minimal');
+  const svg = document.getElementById('nsf-flow-svg');
+  const copy = {
+    zh:{title:'核心对局流程',subtitle:'白天准备 / 夜间1v3对抗 / 逃生结算',dayPhase:'白天阶段',role:'职业身份分配',dayAct:'自由活动|轻量工作 · 社交',dayGain:'发现异常|获得初始工具',nightfall:'夜晚降临',splitShort:'身份揭晓',split:'1名追捕者 · 3名逃亡者',nightPhase:'不存在的楼层 · 1v3',intruders:'逃亡者 ×3',explore:'探索房间',ability:'使用职业能力',collect:'收集任意|5 / 7件物资',rules:'判断技能|寻找规则',assemble:'组装|出口',host:'追捕者 · HOST',know:'掌握7件物资|初始位置',predict:'预测路线',control:'使用身份技能|封锁通道',capture:'追击 · 击倒|投入收容室',alert:'物资被触碰 / 区域提示',exit:'出口启动',lastChase:'最终追逐',resolve:'逃生／被捕|对局结算',result:'胜负判定',deeper:'积分|深入楼层',intrWin:'2–3人逃生 · 逃亡者胜',hostWin:'0–1人／超时 · 追捕者胜',resultLong:'2–3人逃生则逃亡者获胜；0–1人逃生或超时则追捕者获胜',principle:'追捕者掌握目标，逃亡者必须揭开结构。',download:'下载 SVG'},
+    ja:{title:'コアマッチフロー',subtitle:'昼の準備 / 夜の1対3対戦 / 脱出判定',dayPhase:'昼フェーズ',role:'職業ロールの割り当て',dayAct:'自由行動|軽作業・交流',dayGain:'異常を発見|初期ツールを獲得',nightfall:'夜の訪れ',splitShort:'役割公開',split:'追跡者1名・逃亡者3名',nightPhase:'存在しないフロア · 1v3',intruders:'逃亡者 ×3',explore:'部屋を探索',ability:'職業能力を使用',collect:'7個中任意の|5個を収集',rules:'能力を推測|ルールを発見',assemble:'脱出口|組み立て',host:'追跡者 · HOST',know:'7つの物資の|初期位置を把握',predict:'進路を予測',control:'職業能力を使用|通路を封鎖',capture:'追跡・ダウン|収容室へ移送',alert:'物資に接触 / エリア通知',exit:'脱出口起動',lastChase:'最終追跡',resolve:'脱出／捕獲|マッチ精算',result:'勝敗判定',deeper:'スコア|深層へ',intrWin:'2–3人脱出 · 逃亡者勝利',hostWin:'0–1人／時間切れ · 追跡者勝利',resultLong:'2–3人脱出で逃亡者側の勝利。0–1人または時間切れで追跡者側の勝利',principle:'追跡者は目標を知り、逃亡者は構造を暴く。',download:'SVGを保存'},
+    en:{title:'CORE MATCH FLOW',subtitle:'DAY PREPARATION / NIGHT 1v3 / MATCH RESOLUTION',dayPhase:'DAY PHASE',role:'Role Assignment',dayAct:'Free Explore|Light Work · Socialize',dayGain:'Notice Anomalies|Gain Starting Tools',nightfall:'NIGHTFALL',splitShort:'ROLES REVEALED',split:'1 Host · 3 Intruders',nightPhase:'THE NONEXISTENT FLOOR · 1v3',intruders:'INTRUDERS ×3',explore:'Explore Rooms',ability:'Use Role Ability',collect:'Collect Any|5 / 7 Supplies',rules:'Read Abilities|Find Rules',assemble:'Assemble|Exit',host:'HOST',know:'Know All 7 Initial|Supply Locations',predict:'Predict Routes',control:'Use Identity Skill|Seal Paths',capture:'Chase · Down|Contain Intruders',alert:'SUPPLY TOUCHED / ZONE ALERT',exit:'EXIT POWERED',lastChase:'FINAL CHASE',resolve:'ESCAPE / CAPTURE|MATCH RESULTS',result:'VICTORY CHECK',deeper:'SCORE|DEEPER FLOOR',intrWin:'2–3 ESCAPE · INTRUDERS WIN',hostWin:'0–1 / TIMEOUT · HOST WINS',resultLong:'2–3 escape: Intruders win. 0–1 escape or timeout: Host wins.',principle:'THE HOST KNOWS THE OBJECTIVES. THE INTRUDERS REVEAL THE STRUCTURE.',download:'Download SVG'}
+  };
+  let language = 'zh';
+  function applyText(el, value) {
+    if (!value) return;
+    if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+      const lines = value.split('|');
+      const x = el.getAttribute('x');
+      el.textContent = '';
+      lines.forEach((line,index) => {
+        const tspan = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+        tspan.setAttribute('x',x);
+        tspan.setAttribute('dy',index === 0 ? '0' : '18');
+        tspan.textContent = line;
+        el.appendChild(tspan);
+      });
+    } else {
+      el.textContent = value.replaceAll('|',' ');
+    }
+  }
+  function setLanguage(next) {
+    language = next;
+    root.querySelectorAll('[data-key]').forEach(el => applyText(el,copy[next][el.dataset.key]));
+    root.querySelectorAll('[data-ui="download"]').forEach(el => el.textContent = copy[next].download);
+    root.querySelectorAll('[data-lang]').forEach(button => {
+      const active = button.dataset.lang === next;
+      button.setAttribute('aria-pressed',String(active));
+      button.classList.toggle('btn-primary',active);
+    });
+    svg.setAttribute('lang',next === 'zh' ? 'zh-CN' : next === 'ja' ? 'ja' : 'en');
+  }
+  root.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click',() => setLanguage(button.dataset.lang)));
+  document.getElementById('nsf-flow-download').addEventListener('click',() => {
+    const clone = svg.cloneNode(true);
+    clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    const sourceStyle = document.getElementById('nsf-flow-styles').textContent.replaceAll('#nsf-flow-minimal ','');
+    const computed = getComputedStyle(root);
+    const vars = ['--nsf-bg','--nsf-bg-lift','--nsf-fg','--nsf-muted','--nsf-border','--nsf-panel','--nsf-panel-soft','--nsf-green','--nsf-green-soft','--nsf-green-strong','--nsf-red','--nsf-red-soft','--nsf-red-strong'];
+    const resolved = vars.map(name => `${name}:${computed.getPropertyValue(name).trim()};`).join('');
+    const style = document.createElementNS('http://www.w3.org/2000/svg','style');
+    style.textContent = `svg{${resolved}}${sourceStyle}`;
+    clone.insertBefore(style,clone.firstChild);
+    const blob = new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `no-such-floor-core-flow-${language}.svg`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+  setLanguage(new URLSearchParams(window.location.search).get('lang') || 'zh');
+})();
+</script>
