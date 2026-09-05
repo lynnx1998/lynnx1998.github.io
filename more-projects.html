@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XIN · More Projects</title>
+<title>More Projects</title>
 <style>
 :root{--bg:#07101b;--panel:#0b1723;--line:rgba(130,184,226,.18);--blue:#79b9e8;--text:#edf4fa;--muted:#91a3b2;--violet:#9a78d1}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Songti SC","Yu Mincho",serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background:repeating-linear-gradient(104deg,transparent 0 42px,rgba(126,174,210,.14) 42px 43px),radial-gradient(80% 55% at 70% 0,rgba(48,101,145,.4),transparent 70%)}
@@ -40,11 +40,14 @@ en:{navExperience:'Experience',navWorks:'Selected Work',navSkills:'Skills',navAb
 Object.assign(copy.zh,{gameTitle:'交互网页游戏',gameDesc:'大学时期独立制作 · 网页交互、视觉与游戏体验实验',comicCaption:'泳池 · 黑白漫画插画',schoolgirlCaption:'人物插画',calendarCaption:'现代青年服饰会日历插画实际贩卖品',weddingCaption:'婚礼邀请 · 定制插画',exhibitionCaption:'小池薰 · 虚构家族展览视觉',maskCaption:'多面性 · 黏土面具作品'});
 Object.assign(copy.ja,{gameTitle:'インタラクティブWebゲーム',gameDesc:'大学時代の個人制作 · Webインタラクション、ビジュアル、ゲーム体験の実験',comicCaption:'プール · モノクロ漫画イラスト',schoolgirlCaption:'人物イラスト',calendarCaption:'現代青年服飾会 · 実際に販売されたカレンダーイラスト',weddingCaption:'ウェディング招待状 · オーダーイラスト',exhibitionCaption:'小池薫 · 架空の家族展ビジュアル',maskCaption:'多面性 · 粘土による仮面作品'});
 Object.assign(copy.en,{gameTitle:'Interactive Web Game',gameDesc:'Independent university project · An experiment in web interaction, visual design, and game experience',comicCaption:'Pool · Monochrome Comic Illustration',schoolgirlCaption:'Character Illustration',calendarCaption:'Modern Youth Fashion Society · Calendar illustration produced for sale',weddingCaption:'Wedding Invitation · Custom Illustration',exhibitionCaption:'Kaoru Koike · Fictional Family Exhibition Visual',maskCaption:'Multiplicity · Clay Mask Work'});
+Object.assign(copy.zh,{exhibitionCaption:'小池薰展览 · 参与策展'});
+Object.assign(copy.ja,{exhibitionCaption:'小池薫展 · キュレーションに参加'});
+Object.assign(copy.en,{exhibitionCaption:'Kaoru Koike Exhibition · Curation team'});
 Object.assign(copy.zh,{intro:'这里收录出版物插画与跨媒介实验。',publishingInfo:'电子工业出版社 · 2019',illustrationDesc:'大学时期，我从漫画与角色插画、平面设计，逐步尝试黏土面具、空间展示与策展。在参与不同设计项目和校园活动的过程中，我持续积累跨媒介创作经验，也逐渐形成了对表达方式与材料细节的敏感。',illustrationRole:'大学时期 · 视觉与立体实验'});
 Object.assign(copy.ja,{publishingInfo:'電子工業出版社 · 2019'});
 Object.assign(copy.en,{publishingInfo:'Publishing House of Electronics Industry · 2019'});
 Object.assign(copy.ja,{intro:'出版物のイラストレーションと、メディアを横断する実験作品を収録しています。',illustrationDesc:'大学時代、漫画・キャラクターイラストやグラフィックデザインから、粘土の仮面、空間展示、キュレーションへと表現を広げました。さまざまなデザインプロジェクトや学内活動に参加するなかで、メディアを横断する制作経験を積み、表現方法と素材の細部に対する感覚を磨いてきました。',illustrationRole:'大学時代 · ビジュアルと立体表現の実験'});
 Object.assign(copy.en,{intro:'This archive brings together publication illustration and cross-media experiments.',illustrationDesc:'During university, I expanded from comics, character illustration, and graphic design into clay masks, spatial displays, and curatorial work. By taking part in a range of design projects and campus activities, I developed cross-media making experience and a stronger sensitivity to both modes of expression and material detail.',illustrationRole:'University work · Visual and three-dimensional experiments'});
-function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(localStorage.getItem('tx-lang')||'zh');
+function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));const navigationType=performance.getEntriesByType('navigation')[0]?.type;setLang(navigationType==='reload'?(localStorage.getItem('tx-lang')||'ja'):'ja');
 </script>
 </body></html>

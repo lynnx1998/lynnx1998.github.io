@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XIN-project</title>
+<title>Homepage</title>
 <style>
   :root{
     --night-0:#070b13; --night-1:#0e1523; --night-2:#18202f;
@@ -258,7 +258,7 @@
       frame=document.getElementById('figureFrame'),
       hint=document.getElementById('hint'), stage=document.getElementById('stage'),
       objs=[].slice.call(document.querySelectorAll('.obj[data-k]'));
-  var mx=innerWidth/2, my=innerHeight/2, tx=mx, ty=my, R=150,
+  var mx=innerWidth*.61, my=innerHeight*.31, tx=mx, ty=my, R=150,
       autoT=0, autoing=true, hasUserPointed=false;
 
   function litCheck(){
@@ -278,8 +278,8 @@
     if(autoing){
       autoT+=0.014;
       var p=autoT, ease=p<1?(1-Math.pow(1-p,3)):1;
-      tx=innerWidth*(0.28+0.44*ease);
-      ty=innerHeight*(0.30+0.34*Math.sin(ease*Math.PI));
+      tx=innerWidth*(0.61+0.055*ease);
+      ty=innerHeight*(0.31+0.10*Math.sin(ease*Math.PI));
       if(autoT>=1.15){autoing=false;}
     }
     mx+=(tx-mx)*0.12; my+=(ty-my)*0.12;
@@ -362,7 +362,8 @@
   document.querySelectorAll('.lang[data-lang]').forEach(function(b){
     b.addEventListener('click',function(){setLang(b.dataset.lang)});
   });
-  setLang(localStorage.getItem('tx-lang')||'zh');
+  const navigationType=performance.getEntriesByType('navigation')[0]?.type;
+  setLang(navigationType==='reload'?(localStorage.getItem('tx-lang')||'ja'):'ja');
 
   // 无障碍:尊重减弱动画偏好
   if(matchMedia('(prefers-reduced-motion:reduce)').matches){autoing=false; R=260;}
