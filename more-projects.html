@@ -14,7 +14,7 @@ footer{position:relative;z-index:1;padding:30px 54px;border-top:1px solid var(--
 </style>
 </head>
 <body>
-<header class="top"><a class="brand" href="portfolio-hero-demo.html">XIN</a><nav class="nav"><a href="experience.html" data-t="navExperience">经历</a><a class="active" href="selected-work.html" data-t="navWorks">个人作品</a><a href="skills.html" data-t="navSkills">技能</a><a href="portfolio-hero-demo.html#about" data-t="navAbout">关于</a><span class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></span></nav></header>
+<header class="top"><a class="brand" href="index.html">XIN</a><nav class="nav"><a href="experience.html" data-t="navExperience">经历</a><a class="active" href="selected-work.html" data-t="navWorks">个人作品</a><a href="skills.html" data-t="navSkills">技能</a><a href="index.html#about" data-t="navAbout">关于</a><span class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></span></nav></header>
 <main>
   <a class="back" href="selected-work.html" data-t="back">← 返回精选项目</a>
   <span class="eyebrow">ARCHIVE · MORE WORK</span>
@@ -48,6 +48,6 @@ Object.assign(copy.ja,{publishingInfo:'電子工業出版社 · 2019'});
 Object.assign(copy.en,{publishingInfo:'Publishing House of Electronics Industry · 2019'});
 Object.assign(copy.ja,{intro:'出版物のイラストレーションと、メディアを横断する実験作品を収録しています。',illustrationDesc:'大学時代、漫画・キャラクターイラストやグラフィックデザインから、粘土の仮面、空間展示、キュレーションへと表現を広げました。さまざまなデザインプロジェクトや学内活動に参加するなかで、メディアを横断する制作経験を積み、表現方法と素材の細部に対する感覚を磨いてきました。',illustrationRole:'大学時代 · ビジュアルと立体表現の実験'});
 Object.assign(copy.en,{intro:'This archive brings together publication illustration and cross-media experiments.',illustrationDesc:'During university, I expanded from comics, character illustration, and graphic design into clay masks, spatial displays, and curatorial work. By taking part in a range of design projects and campus activities, I developed cross-media making experience and a stronger sensitivity to both modes of expression and material detail.',illustrationRole:'University work · Visual and three-dimensional experiments'});
-function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));const navigationType=performance.getEntriesByType('navigation')[0]?.type;setLang(navigationType==='reload'?(localStorage.getItem('tx-lang')||'ja'):'ja');
+function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(localStorage.getItem('tx-lang')||'ja');
 </script>
 </body></html>

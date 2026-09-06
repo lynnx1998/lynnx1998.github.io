@@ -226,7 +226,7 @@
   <div class="skip-wrap" id="skipWrap">
     <button class="skip" id="skip" type="button" aria-expanded="false">SKIP</button>
     <div class="skip-menu" id="skipMenu">
-      <a href="portfolio-hero-demo.html" data-i="home">首页</a>
+      <a href="index.html" data-i="home">首页</a>
       <a href="experience.html" data-i="experience">经历</a>
       <a href="selected-work.html" data-i="works">个人作品</a>
       <a href="skills.html" data-i="skills">技能</a>
@@ -362,8 +362,7 @@
   document.querySelectorAll('.lang[data-lang]').forEach(function(b){
     b.addEventListener('click',function(){setLang(b.dataset.lang)});
   });
-  const navigationType=performance.getEntriesByType('navigation')[0]?.type;
-  setLang(navigationType==='reload'?(localStorage.getItem('tx-lang')||'ja'):'ja');
+  setLang(localStorage.getItem('tx-lang')||'ja');
 
   // 无障碍:尊重减弱动画偏好
   if(matchMedia('(prefers-reduced-motion:reduce)').matches){autoing=false; R=260;}
