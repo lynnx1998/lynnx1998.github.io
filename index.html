@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="ja">
 <head><script>document.documentElement.style.visibility='hidden';document.addEventListener('DOMContentLoaded',()=>{document.documentElement.style.visibility='';});</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homepage</title>
+<title>佟心 XIN｜Product Designer · UI/UX · Web</title>
+<meta name="description" content="佟心的作品集。我做 AI 产品和交互设计，也画漫画、写小说。这里有 Capture、Orbit、Guild Log 等项目。">
+<meta property="og:title" content="佟心 XIN｜Product Designer · UI/UX · Web">
+<meta property="og:description" content="佟心的作品集。我做 AI 产品和交互设计，也画漫画、写小说。这里有 Capture、Orbit、Guild Log 等项目。">
+<meta property="og:image" content="portfolio-hero-selected.png">
 <style>
   :root{
     --night-0:#070b13; --night-1:#0e1523; --night-2:#18202f;
@@ -68,6 +72,7 @@
   .topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
     justify-content:space-between;padding:22px 34px;cursor:auto}
   .brand{font:500 21px/1 Georgia,"Times New Roman",serif;letter-spacing:.22em;color:var(--ink);text-shadow:0 0 18px rgba(255,230,168,.28)}
+  .brand-wrap{display:grid;gap:7px}.identity{color:var(--ink-dim);font:11px/1.2 system-ui,sans-serif;letter-spacing:.08em;white-space:nowrap}
   .nav{display:flex;gap:30px;font-family:system-ui,sans-serif;font-size:14px;letter-spacing:.04em}
   .nav a{color:var(--ink-dim);text-decoration:none;transition:color .2s;padding-bottom:3px;border-bottom:1px solid transparent}
   .nav a:hover{color:var(--ink);border-bottom-color:var(--beam-warm)}
@@ -96,14 +101,17 @@
     pointer-events:none;transition:opacity .24s ease,visibility .24s ease;cursor:auto}
   .contact-modal:target{opacity:1;visibility:visible;pointer-events:auto}
   .contact-backdrop{position:absolute;inset:0}
-  .contact-card{position:relative;width:min(620px,100%);padding:42px 44px 38px;
-    border:1px solid rgba(255,230,168,.22);background:linear-gradient(145deg,rgba(23,24,24,.97),rgba(8,11,17,.98));
-    box-shadow:0 26px 100px rgba(0,0,0,.58),0 0 60px rgba(244,213,141,.07)}
-  .contact-kicker{display:block;margin-bottom:22px;color:var(--beam-warm);font:10px/1 system-ui,sans-serif;
+  .contact-card{position:relative;width:min(680px,100%);padding:46px 48px 40px;overflow:hidden;
+    border:1px solid rgba(103,159,255,.35);background:linear-gradient(145deg,rgba(12,21,40,.98),rgba(5,9,17,.99));
+    box-shadow:0 26px 100px rgba(0,0,0,.62),0 0 74px rgba(71,132,255,.16)}
+  .contact-card::before{content:"";position:absolute;width:360px;height:360px;right:-140px;top:-170px;pointer-events:none;
+    background:radial-gradient(circle,rgba(99,160,255,.30),rgba(38,94,190,.08) 42%,transparent 70%)}
+  .contact-kicker{position:relative;display:block;margin-bottom:22px;color:#79adff;font:10px/1 system-ui,sans-serif;
     letter-spacing:.22em}
-  .contact-card h2{margin:0;color:#f4efe5;font:400 clamp(36px,6vw,60px)/1 Georgia,"Times New Roman",serif;
-    letter-spacing:-.02em}
-  .contact-reading{margin:10px 0 30px;color:var(--ink-dim);font:13px/1.5 system-ui,sans-serif;letter-spacing:.08em}
+  .contact-card h2{position:relative;margin:0;color:#fff;font:400 clamp(36px,6vw,60px)/1.02 Georgia,"Times New Roman","Songti SC",serif;
+    letter-spacing:-.025em;text-shadow:0 0 30px rgba(107,165,255,.18)}
+  .contact-reading{position:relative;margin:12px 0 30px;color:#9fc2ff;font:600 12px/1.5 system-ui,sans-serif;letter-spacing:.1em}
+  .contact-intro{position:relative;margin:0 0 23px;color:#c7d2e5;font:14px/1.9 Inter,"Noto Sans SC","Noto Sans JP",system-ui,sans-serif}.contact-intro+.contact-intro{margin-top:-10px}
   .contact-list{display:grid;gap:0;border-top:1px solid rgba(255,230,168,.13)}
   .contact-row{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:17px 0;
     border-bottom:1px solid rgba(255,230,168,.13);align-items:baseline}
@@ -123,7 +131,7 @@
 
   @media (max-width:640px){
     .nav{display:none}.figure{transform:translate(-50%,-46%) scale(.82)}
-    .brand{font-size:19px;letter-spacing:.18em}.topbar{padding:16px 18px}
+    .brand{font-size:19px;letter-spacing:.18em}.identity{font-size:10px}.topbar{padding:16px 18px}
     .contact-card{padding:36px 25px 28px}.contact-row{grid-template-columns:86px 1fr;gap:12px}
   }
 
@@ -214,7 +222,7 @@
 </div>
 
 <div class="topbar">
-  <div class="brand">XIN</div>
+  <div class="brand-wrap"><div class="brand">XIN</div><div class="identity" data-i="identity">佟心｜Product Designer · UI/UX · Web</div></div>
   <nav class="nav">
     <a href="experience.html" data-i="experience">经历</a><a href="selected-work.html" data-i="works">个人作品</a><a href="skills.html" data-i="skills">技能</a><a href="#about" data-i="about">关于</a>
     <span class="langs" aria-label="语言选择">
@@ -224,7 +232,7 @@
     </span>
   </nav>
   <div class="skip-wrap" id="skipWrap">
-    <button class="skip" id="skip" type="button" aria-expanded="false">SKIP</button>
+    <button class="skip" id="skip" type="button">直接看作品 →</button>
     <div class="skip-menu" id="skipMenu">
       <a href="index.html" data-i="home">首页</a>
       <a href="experience.html" data-i="experience">经历</a>
@@ -241,15 +249,17 @@
     <a class="contact-close" href="#" aria-label="关闭">×</a>
     <span class="contact-kicker">ABOUT / CONTACT</span>
     <h2 id="contactTitle">佟心 / TONG XIN</h2>
-    <p class="contact-reading">トン・シン</p>
+    <p class="contact-reading" data-i="aboutRole">Product Designer · UI/UX · Web</p>
+    <p class="contact-intro" data-i="aboutIntro1">我是佟心。从央美附中到大学动画设计系，经历了长期而系统的训练，培养了扎实的美学知识与设计思考。</p>
+    <p class="contact-intro" data-i="aboutIntro2">现在，我在精进设计与开发能力的同时，也在使用 Codex 等工具制作多个 AI 工具。</p>
+    <p class="contact-intro" data-i="aboutIntro3">我希望活用自己的创造力，在外部环境与 AI 技术不断变化的时代顺应变化、发挥价值；倾听用户与顾客的声音，创作他们真正需要的东西，并亲自参与从企划到落地的一系列流程。</p>
     <dl class="contact-list">
-      <div class="contact-row"><dt data-i="contactName">姓名</dt><dd>佟心 / TONG XIN</dd></div>
       <div class="contact-row"><dt data-i="contactEmail">邮箱</dt><dd><a href="mailto:lynntong25@gmail.com">lynntong25@gmail.com</a></dd></div>
     </dl>
   </div>
 </section>
 
-<div class="hint" id="hint"><b>移动光标,像握着手电筒</b> · 照亮暗处,看看这个人是由什么构成的</div>
+<div class="hint" id="hint"><b>移动光</b>，照一照暗处——看看我是用什么拼起来的。</div>
 
 <script>
 (function(){
@@ -327,26 +337,23 @@
       }
     });
   });
-  document.getElementById('skip').addEventListener('click',function(){
-    var wrap=document.getElementById('skipWrap'),open=wrap.classList.toggle('open');
-    this.setAttribute('aria-expanded',open?'true':'false');
-  });
+  document.getElementById('skip').addEventListener('click',function(){location.href='selected-work.html';});
   document.addEventListener('click',function(e){
     var wrap=document.getElementById('skipWrap');
     if(!wrap.contains(e.target)){wrap.classList.remove('open');document.getElementById('skip').setAttribute('aria-expanded','false');}
   });
 
   var lang='zh', copy={
-    zh:{home:'首页',experience:'经历',works:'个人作品',skills:'技能',about:'关于',skip:'SKIP',contactName:'姓名',contactPhone:'电话',contactEmail:'邮箱',phoneValue:'090-6631-7025',
-      hint:'<b>移动光标,像握着手电筒</b> · 照亮暗处,看看这个人是由什么构成的',
+    zh:{home:'首页',experience:'经历',works:'作品',skills:'技能',about:'关于我',skip:'直接看作品 →',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'我是佟心。从央美附中到大学动画设计系，经历了长期而系统的训练，培养了扎实的美学知识与设计思考。',aboutIntro2:'现在，我在精进设计与开发能力的同时，也在使用 Codex 等工具制作多个 AI 工具。',aboutIntro3:'我希望活用自己的创造力，在外部环境与 AI 技术不断变化的时代顺应变化、发挥价值；倾听用户与顾客的声音，创作他们真正需要的东西，并亲自参与从企划到落地的一系列流程。',contactEmail:'邮箱',
+      hint:'<b>移动光</b>，照一照暗处——看看我是用什么拼起来的。',
       diary:'我的经历 →',tools:'我的技能 →',paint:'我的作品 →',letter:'我的思考 →',
       enter:'→ 进入板块：',skipAlert:'→ 跳过开场，直接进入作品列表'},
-    ja:{home:'ホーム',experience:'経歴',works:'プロジェクト',skills:'スキル',about:'私について',skip:'SKIP',contactName:'氏名',contactPhone:'電話',contactEmail:'メール',phoneValue:'090-6631-7025',
-      hint:'<b>光を動かして</b> · この人が何でできているのか、暗闇を照らして探してみてください',
+    ja:{home:'ホーム',experience:'経歴',works:'作品',skills:'スキル',about:'私について',skip:'作品を見る →',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'佟心です。中央美術学院附属中等美術学校から大学のアニメーションデザイン学科まで、長期にわたる体系的な学びを通して、確かな美的知識とデザイン思考を培いました。',aboutIntro2:'現在はデザインと開発の力を磨きながら、Codexなどのツールを活用して複数のAIツールを制作しています。',aboutIntro3:'創造力を活かし、外部環境やAI技術が変化し続ける中でも柔軟に適応して価値を発揮したいと考えています。ユーザーと顧客の声に耳を傾け、本当に必要とされるものを企画から実装まで一貫して形にしていきます。',contactEmail:'メール',
+      hint:'<b>光を動かして</b> · 私が何でできているか探してみてください。',
       diary:'私の経歴 →',tools:'私のスキル →',paint:'私の作品 →',letter:'私の考え →',
       enter:'→ セクションへ：',skipAlert:'→ オープニングをスキップして作品一覧へ'},
-    en:{home:'Home',experience:'Experience',works:'Selected Work',skills:'Skills',about:'About',skip:'SKIP',contactName:'Name',contactPhone:'Phone',contactEmail:'Email',phoneValue:'+81 90 6631 7025',
-      hint:'<b>Move the light</b> · Discover what this person is made of',
+    en:{home:'Home',experience:'Experience',works:'Work',skills:'Skills',about:'About me',skip:'View work →',identity:'Tong Xin｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'I am Tong Xin. From the CAFA Affiliated School through university studies in animation design, long-term and systematic training gave me a strong foundation in aesthetics and design thinking.',aboutIntro2:'I am now strengthening both my design and development skills while using tools such as Codex to build multiple AI tools.',aboutIntro3:'I want to put my creativity to work, adapt as external conditions and AI continue to change, and create meaningful value. By listening closely to users and clients, I aim to make what they truly need and participate directly from planning through implementation.',contactEmail:'Email',
+      hint:'<b>Move the light</b> · See what I am made of.',
       diary:'Experience →',tools:'Skills →',paint:'Selected Work →',letter:'Thoughts →',
       enter:'→ Open section: ',skipAlert:'→ Skip the intro and view selected work'}
   };
