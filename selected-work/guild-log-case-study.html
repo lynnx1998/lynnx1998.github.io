@@ -99,7 +99,7 @@ Object.assign(copy.zh,{overviewBody:'普通的待办软件只记录“做没做�
 Object.assign(copy.zh,{lead:'在现实里做完一件事的同时，另一个世界里我们的角色就长大了一些。'});
 Object.assign(copy.ja,{role:'コンセプト、インタラクション、UIを一人で担当し、プロトタイプはコードで実装'});
 Object.assign(copy.en,{role:'Independently completed the concept, interaction, and interface, and coded the prototype'});
-let lang=localStorage.getItem('tx-lang')||'ja';
+let lang='ja';try{lang=localStorage.getItem('tx-lang')||'ja'}catch(e){}
 function setLang(next){lang=next;document.documentElement.lang=next;document.querySelectorAll('[data-t]').forEach(el=>{const value=copy[next][el.dataset.t];if(value)el.textContent=value});document.querySelectorAll('[data-lang]').forEach(el=>el.classList.toggle('active',el.dataset.lang===next));try{localStorage.setItem('tx-lang',next)}catch(e){}updateToggleLabel();syncDemoLang();document.querySelectorAll('[data-t-aria]').forEach(el=>el.setAttribute('aria-label',copy[next][el.dataset.tAria]))}
 document.querySelectorAll('[data-lang]').forEach(el=>el.addEventListener('click',()=>setLang(el.dataset.lang)));
 const details=document.getElementById('caseDetails'),toggle=document.getElementById('mobileToggle');
