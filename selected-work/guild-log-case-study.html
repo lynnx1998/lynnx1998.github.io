@@ -18,12 +18,15 @@
 @media(min-height:950px) and (min-width:901px){.demo-stage{width:351px;height:760px}.demo-frame{transform:scale(.9)}}
 @media(max-width:900px){.layout{display:block}.demo-side{position:relative;height:auto;min-height:100dvh;padding:70px 0 76px;border:0;overflow:hidden}.demo-stage{width:390px;height:844px}.demo-frame{transform:none}.demo-label{top:20px;left:18px}.open-demo{top:16px;right:18px}.case-side{display:none}.case-side.open{display:block}.topbar{height:60px;padding:0 18px}.content{padding:56px 22px 100px}.summary{grid-template-columns:1fr}.flow,.growth{grid-template-columns:1fr}.flow div{min-height:auto;border-right:0;border-bottom:1px solid var(--line)}.flow div:not(:last-child):after{content:"↓";right:18px;top:auto;bottom:-11px}.growth div{min-height:auto}.cards{grid-template-columns:1fr}.decision .card:last-child{grid-column:auto}.compare-item{grid-template-columns:1fr;gap:8px}.mobile-toggle{display:flex;position:fixed;z-index:40;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);align-items:center;gap:10px;border:1px solid #6d568e;background:#171126ec;color:#eee8f8;padding:12px 18px;border-radius:999px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(10px);white-space:nowrap;font-size:12px;cursor:pointer}.mobile-toggle .arrow{font-size:18px;transition:transform .25s}.mobile-toggle.open .arrow{transform:rotate(180deg)}}
 .decision .card:last-child{grid-column:auto!important}
+.mobile-top{display:none}
+@media(max-width:900px){.demo-side{padding:60px 0 88px;min-height:100vh;min-height:100dvh}.open-demo{display:none}.mobile-top{display:flex;position:absolute;z-index:3;top:0;left:0;right:0;height:56px;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;background:linear-gradient(#0b0816f2,#0b081600)}.mobile-top .back{padding:10px 4px}.mobile-top-right{display:flex;align-items:center;gap:14px}.mobile-top .langs{gap:10px}.mobile-top .lang{font-size:12px;padding:6px 0}.mobile-open{color:#cfc3e6;text-decoration:none;font-size:15px;border:1px solid #4d3d69;border-radius:999px;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center}.demo-frame{border-radius:28px}}
 </style>
 </head>
 <body>
 <button class="mobile-toggle" id="mobileToggle" aria-expanded="false"><span data-t="expand">查看项目细节</span><span class="arrow">↓</span></button>
 <main class="layout">
   <section class="demo-side" aria-label="Interactive Guild Log prototype">
+    <div class="mobile-top"><button class="back" type="button" data-t="back" onclick="goProjects()">← 返回项目</button><div class="mobile-top-right"><div class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></div><a class="mobile-open" href="guild-log/index.html" target="_blank" rel="noopener" data-t-aria="fullscreen" aria-label="Open full screen">↗</a></div></div>
     <a class="open-demo" href="guild-log/index.html" target="_blank" data-t="fullscreen">全屏打开 ↗</a>
     <div class="demo-stage" id="demoStage"><iframe class="demo-frame" title="Guild Log interactive prototype" src="guild-log/index.html" loading="eager"></iframe></div>
   </section>
@@ -96,13 +99,15 @@ Object.assign(copy.zh,{overviewBody:'普通的待办软件只记录“做没做�
 Object.assign(copy.zh,{lead:'在现实里做完一件事的同时，另一个世界里我们的角色就长大了一些。'});
 Object.assign(copy.ja,{role:'コンセプト、インタラクション、UIを一人で担当し、プロトタイプはコードで実装'});
 Object.assign(copy.en,{role:'Independently completed the concept, interaction, and interface, and coded the prototype'});
-let lang=localStorage.getItem('tx-lang')||'ja';
-function setLang(next){lang=next;document.documentElement.lang=next;document.querySelectorAll('[data-t]').forEach(el=>{const value=copy[next][el.dataset.t];if(value)el.textContent=value});document.querySelectorAll('[data-lang]').forEach(el=>el.classList.toggle('active',el.dataset.lang===next));localStorage.setItem('tx-lang',next);updateToggleLabel()}
+let lang='ja';try{lang=localStorage.getItem('tx-lang')||'ja'}catch(e){}
+function setLang(next){lang=next;document.documentElement.lang=next;document.querySelectorAll('[data-t]').forEach(el=>{const value=copy[next][el.dataset.t];if(value)el.textContent=value});document.querySelectorAll('[data-lang]').forEach(el=>el.classList.toggle('active',el.dataset.lang===next));try{localStorage.setItem('tx-lang',next)}catch(e){}updateToggleLabel();syncDemoLang();document.querySelectorAll('[data-t-aria]').forEach(el=>el.setAttribute('aria-label',copy[next][el.dataset.tAria]))}
 document.querySelectorAll('[data-lang]').forEach(el=>el.addEventListener('click',()=>setLang(el.dataset.lang)));
 const details=document.getElementById('caseDetails'),toggle=document.getElementById('mobileToggle');
 function updateToggleLabel(){toggle.querySelector('[data-t="expand"]').textContent=copy[lang][details.classList.contains('open')?'collapse':'expand']}
 toggle.addEventListener('click',()=>{const open=details.classList.toggle('open');toggle.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open);updateToggleLabel();if(open)setTimeout(()=>details.scrollIntoView({behavior:'smooth',block:'start'}),40)});
-function fitMobileDemo(){const stage=document.getElementById('demoStage'),frame=stage.querySelector('iframe');if(innerWidth>900){stage.style.width='';stage.style.height='';frame.style.transform='';return}const s=Math.min(1,innerWidth/390);stage.style.width=(390*s)+'px';stage.style.height=(844*s)+'px';frame.style.transform='scale('+s+')'}
+function fitMobileDemo(){const stage=document.getElementById('demoStage'),frame=stage.querySelector('iframe');if(innerWidth>900){stage.style.width='';stage.style.height='';frame.style.transform='';return}const s=Math.min(1,(innerWidth-24)/390,(innerHeight-60-88)/844);stage.style.width=(390*s)+'px';stage.style.height=(844*s)+'px';frame.style.transform='scale('+s+')'}
+function syncDemoLang(){const frame=document.querySelector('.demo-frame');try{frame.contentWindow.postMessage({type:'tx-lang',lang},'*')}catch(e){}}
+document.querySelector('.demo-frame').addEventListener('load',syncDemoLang);
 addEventListener('resize',fitMobileDemo);fitMobileDemo();setLang(lang);
 </script>
 </body></html>
