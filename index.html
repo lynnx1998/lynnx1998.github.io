@@ -81,18 +81,29 @@
     font-size:12px;letter-spacing:.04em;cursor:pointer;transition:color .2s}
   .lang:hover,.lang.active{color:var(--beam)}
   .lang + .lang::before{content:"/";color:rgba(255,255,255,.18);margin-right:9px;pointer-events:none}
-  .skip{font-family:system-ui,sans-serif;font-size:13px;letter-spacing:.05em;color:var(--night-0);
-    background:var(--beam-warm);border:none;border-radius:2px;padding:9px 18px;cursor:pointer;
-    transition:transform .15s, background .2s}
-  .skip:hover{background:var(--beam);transform:translateY(-1px)}
+  .skip{display:inline-flex;align-items:center;gap:8px;font-family:system-ui,sans-serif;font-size:12px;letter-spacing:.08em;
+    color:var(--beam);background:rgba(255,230,168,.06);border:1px solid rgba(255,230,168,.42);border-radius:999px;
+    padding:9px 16px 9px 18px;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:transform .15s,background .2s,color .2s,border-color .2s}
+  .skip:hover,.skip-wrap.open .skip{background:var(--beam-warm);color:var(--night-0);border-color:var(--beam-warm);transform:translateY(-1px)}
+  .skip .skip-icon{display:none;width:14px;height:10px;position:relative}
+  .skip .skip-icon i{position:absolute;left:0;right:0;height:1.5px;border-radius:2px;background:currentColor;transition:transform .2s,opacity .2s}
+  .skip .skip-icon i:nth-child(1){top:0}.skip .skip-icon i:nth-child(2){top:4px}.skip .skip-icon i:nth-child(3){top:8px}
+  .skip-wrap.open .skip-icon i:nth-child(1){transform:translateY(4px) rotate(45deg)}
+  .skip-wrap.open .skip-icon i:nth-child(2){opacity:0}
+  .skip-wrap.open .skip-icon i:nth-child(3){transform:translateY(-4px) rotate(-45deg)}
   .skip-wrap{position:relative}
-  .skip-menu{position:absolute;right:0;top:46px;width:190px;padding:8px;background:rgba(9,13,21,.94);
-    border:1px solid rgba(255,230,168,.2);border-radius:4px;box-shadow:0 18px 55px rgba(0,0,0,.45);
+  .skip-menu{position:absolute;right:0;top:48px;width:210px;padding:8px;background:rgba(9,13,21,.95);
+    border:1px solid rgba(255,230,168,.2);border-radius:10px;box-shadow:0 18px 55px rgba(0,0,0,.45);
     backdrop-filter:blur(12px);opacity:0;visibility:hidden;transform:translateY(-7px);transition:.18s ease}
   .skip-wrap.open .skip-menu{opacity:1;visibility:visible;transform:none}
   .skip-menu a{display:flex;justify-content:space-between;color:var(--ink-dim);text-decoration:none;
-    padding:10px 11px;font:12px system-ui,sans-serif;letter-spacing:.04em;border-radius:2px}
+    padding:12px 11px;font:13px system-ui,sans-serif;letter-spacing:.04em;border-radius:6px}
   .skip-menu a::after{content:"→";color:var(--ink-faint)}
+  .skip-menu .menu-langs{display:flex;gap:6px;margin-top:6px;padding:10px 4px 2px;border-top:1px solid rgba(255,230,168,.14)}
+  .skip-menu .menu-langs .lang{flex:1;padding:8px 0;border:1px solid rgba(255,255,255,.1);border-radius:6px;font:12px system-ui,sans-serif}
+  .skip-menu .menu-langs .lang.active{border-color:rgba(255,230,168,.45)}
+  .skip-menu .menu-langs .lang + .lang::before{content:none}
   .skip-menu a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
 
   /* About / Contact：保持首页的暗色与暖光语言，点击“关于”后出现 */
@@ -131,6 +142,7 @@
 
   @media (max-width:640px){
     .nav{display:none}.figure{transform:translate(-50%,-46%) scale(.82)}
+    .skip{padding:10px 14px}.skip .skip-icon{display:inline-block}
     .brand{font-size:19px;letter-spacing:.18em}.identity{font-size:10px}.topbar{padding:16px 18px}
     .contact-card{padding:36px 25px 28px}.contact-row{grid-template-columns:86px 1fr;gap:12px}
   }
@@ -232,13 +244,17 @@
     </span>
   </nav>
   <div class="skip-wrap" id="skipWrap">
-    <button class="skip" id="skip" type="button">直接看作品 →</button>
+    <button class="skip" id="skip" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="skipMenu"><span class="skip-label">直接看作品 →</span><span class="skip-icon" aria-hidden="true"><i></i><i></i><i></i></span></button>
     <div class="skip-menu" id="skipMenu">
-      <a href="index.html" data-i="home">首页</a>
       <a href="experience.html" data-i="experience">经历</a>
       <a href="selected-work.html" data-i="works">个人作品</a>
       <a href="skills.html" data-i="skills">技能</a>
       <a href="#about" data-i="about">关于</a>
+      <div class="menu-langs" aria-label="Language">
+        <button class="lang" type="button" data-lang="ja">日本語</button>
+        <button class="lang" type="button" data-lang="zh">中</button>
+        <button class="lang" type="button" data-lang="en">EN</button>
+      </div>
     </div>
   </div>
 </div>
@@ -337,22 +353,34 @@
       }
     });
   });
-  document.getElementById('skip').addEventListener('click',function(){location.href='selected-work.html';});
+  // 桌面端：顶栏已有完整导航，按钮直接进入作品；手机端导航被隐藏，按钮改为展开菜单（全部页面 + 语言）
+  var mobileNav=matchMedia('(max-width:640px)');
+  document.getElementById('skip').addEventListener('click',function(e){
+    if(!mobileNav.matches){location.href='selected-work.html';return;}
+    e.stopPropagation();
+    var wrap=document.getElementById('skipWrap'),open=wrap.classList.toggle('open');
+    this.setAttribute('aria-expanded',open?'true':'false');
+  });
+  document.getElementById('skipMenu').addEventListener('click',function(e){
+    if(e.target.closest('a'))document.getElementById('skipWrap').classList.remove('open');
+  });
+  function syncSkipLabel(){document.querySelector('#skip .skip-label').textContent=mobileNav.matches?copy[lang].menu:copy[lang].skip;}
+  mobileNav.addEventListener('change',function(){document.getElementById('skipWrap').classList.remove('open');syncSkipLabel();});
   document.addEventListener('click',function(e){
     var wrap=document.getElementById('skipWrap');
     if(!wrap.contains(e.target)){wrap.classList.remove('open');document.getElementById('skip').setAttribute('aria-expanded','false');}
   });
 
   var lang='zh', copy={
-    zh:{home:'首页',experience:'经历',works:'作品',skills:'技能',about:'关于我',skip:'直接看作品 →',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'我是佟心。从央美附中到大学动画设计系，经历了长期而系统的训练，培养了扎实的美学知识与设计思考。',aboutIntro2:'现在，我在精进设计与开发能力的同时，也在使用 Codex 等工具制作多个 AI 工具。',aboutIntro3:'我希望活用自己的创造力，在外部环境与 AI 技术不断变化的时代顺应变化、发挥价值；倾听用户与顾客的声音，创作他们真正需要的东西，并亲自参与从企划到落地的一系列流程。',contactEmail:'邮箱',
+    zh:{home:'首页',experience:'经历',works:'作品',skills:'技能',about:'关于我',skip:'直接看作品 →',menu:'菜单',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'我是佟心。从央美附中到大学动画设计系，经历了长期而系统的训练，培养了扎实的美学知识与设计思考。',aboutIntro2:'现在，我在精进设计与开发能力的同时，也在使用 Codex 等工具制作多个 AI 工具。',aboutIntro3:'我希望活用自己的创造力，在外部环境与 AI 技术不断变化的时代顺应变化、发挥价值；倾听用户与顾客的声音，创作他们真正需要的东西，并亲自参与从企划到落地的一系列流程。',contactEmail:'邮箱',
       hint:'<b>移动光</b>，照一照暗处——看看我是用什么拼起来的。',
       diary:'我的经历 →',tools:'我的技能 →',paint:'我的作品 →',letter:'我的思考 →',
       enter:'→ 进入板块：',skipAlert:'→ 跳过开场，直接进入作品列表'},
-    ja:{home:'ホーム',experience:'経歴',works:'作品',skills:'スキル',about:'私について',skip:'作品を見る →',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'佟心です。中央美術学院附属中等美術学校から大学のアニメーションデザイン学科まで、長期にわたる体系的な学びを通して、確かな美的知識とデザイン思考を培いました。',aboutIntro2:'現在はデザインと開発の力を磨きながら、Codexなどのツールを活用して複数のAIツールを制作しています。',aboutIntro3:'創造力を活かし、外部環境やAI技術が変化し続ける中でも柔軟に適応して価値を発揮したいと考えています。ユーザーと顧客の声に耳を傾け、本当に必要とされるものを企画から実装まで一貫して形にしていきます。',contactEmail:'メール',
+    ja:{home:'ホーム',experience:'経歴',works:'作品',skills:'スキル',about:'私について',skip:'作品を見る →',menu:'メニュー',identity:'佟心｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'佟心です。中央美術学院附属中等美術学校から大学のアニメーションデザイン学科まで、長期にわたる体系的な学びを通して、確かな美的知識とデザイン思考を培いました。',aboutIntro2:'現在はデザインと開発の力を磨きながら、Codexなどのツールを活用して複数のAIツールを制作しています。',aboutIntro3:'創造力を活かし、外部環境やAI技術が変化し続ける中でも柔軟に適応して価値を発揮したいと考えています。ユーザーと顧客の声に耳を傾け、本当に必要とされるものを企画から実装まで一貫して形にしていきます。',contactEmail:'メール',
       hint:'<b>光を動かして</b> · 私が何でできているか探してみてください。',
       diary:'私の経歴 →',tools:'私のスキル →',paint:'私の作品 →',letter:'私の考え →',
       enter:'→ セクションへ：',skipAlert:'→ オープニングをスキップして作品一覧へ'},
-    en:{home:'Home',experience:'Experience',works:'Work',skills:'Skills',about:'About me',skip:'View work →',identity:'Tong Xin｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'I am Tong Xin. From the CAFA Affiliated School through university studies in animation design, long-term and systematic training gave me a strong foundation in aesthetics and design thinking.',aboutIntro2:'I am now strengthening both my design and development skills while using tools such as Codex to build multiple AI tools.',aboutIntro3:'I want to put my creativity to work, adapt as external conditions and AI continue to change, and create meaningful value. By listening closely to users and clients, I aim to make what they truly need and participate directly from planning through implementation.',contactEmail:'Email',
+    en:{home:'Home',experience:'Experience',works:'Work',skills:'Skills',about:'About me',skip:'View work →',menu:'Menu',identity:'Tong Xin｜Product Designer · UI/UX · Web',aboutRole:'Product Designer · UI/UX · Web',aboutIntro1:'I am Tong Xin. From the CAFA Affiliated School through university studies in animation design, long-term and systematic training gave me a strong foundation in aesthetics and design thinking.',aboutIntro2:'I am now strengthening both my design and development skills while using tools such as Codex to build multiple AI tools.',aboutIntro3:'I want to put my creativity to work, adapt as external conditions and AI continue to change, and create meaningful value. By listening closely to users and clients, I aim to make what they truly need and participate directly from planning through implementation.',contactEmail:'Email',
       hint:'<b>Move the light</b> · See what I am made of.',
       diary:'Experience →',tools:'Skills →',paint:'Selected Work →',letter:'Thoughts →',
       enter:'→ Open section: ',skipAlert:'→ Skip the intro and view selected work'}
@@ -360,7 +388,7 @@
   function setLang(next){
     lang=next;document.documentElement.lang=lang;
     document.querySelectorAll('[data-i]').forEach(function(a){a.textContent=copy[lang][a.dataset.i]});
-    document.getElementById('skip').textContent=copy[lang].skip;
+    syncSkipLabel();
     document.getElementById('hint').innerHTML=copy[lang].hint;
     objs.forEach(function(o){o.querySelector('.cap').textContent=copy[lang][o.dataset.k]});
     document.querySelectorAll('.lang[data-lang]').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
