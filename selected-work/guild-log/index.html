@@ -1265,9 +1265,10 @@ function renderAll(){
 }
 
 (function init(){
-  let ui='en',story=null;
-  try{ui=localStorage.getItem('guildInterfaceLanguage')||localStorage.getItem('tx-lang')||'en';story=localStorage.getItem('guildStoryLanguage');}catch(e){}
-  S.lang=T[ui]?ui:'en';S.storyLang=T[story]?story:S.lang;
+  // Same default as the rest of the portfolio: Japanese unless the visitor chose otherwise
+  let ui='ja',story=null;
+  try{ui=localStorage.getItem('guildInterfaceLanguage')||localStorage.getItem('tx-lang')||'ja';story=localStorage.getItem('guildStoryLanguage');}catch(e){}
+  S.lang=T[ui]?ui:'ja';S.storyLang=T[story]?story:S.lang;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)setMotion(false);
   renderAll();goPage(0);
 })();
