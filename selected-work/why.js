@@ -8,17 +8,17 @@
   };
   var WHY={
     capture:{
-      zh:{problem:'和 AI 聊完，总有几句想留下。单独复制会丢掉前后文；专门存进笔记又会打断思路，过几天就找不回来了。',
-          hypothesis:'如果保存只需要一个快捷键，而且自动带上当时的问题、来源和时间，人就会在当下把有用的内容留住，整理可以以后再做。',
-          solution:'做成一个 macOS 工具：选中、按快捷键，内容连同上下文先进 Workbench；之后按 Box 分类，需要时再让 AI 整理、合并导出。',
+      zh:{problem:'点子、想记下的东西、AI 回答里有用的几句，每天都在冒出来。可每一条都要先想好放进哪个笔记本、哪个项目，要么来不及，要么思路被打断，过几天就找不回来了。',
+          hypothesis:'如果不用当场分类，按一个快捷键就能先存下来，并自动带上来源和时间，人就会把碎片随手留住，分类和整理可以以后再做。',
+          solution:'做成一个 macOS 工具：按一下快捷键，内容连同上下文先进 Workbench；之后再分到各个 Box（不同的仓库和项目），需要时让 AI 整理、合并导出。',
           result:'已经是能用的软件。我自己在 AI 对话、查资料和 AI Coding 中高频使用；朋友反馈，快速保存和多条导出确实减少了整理时间。'},
-      ja:{problem:'AIとの会話には残したい数行がある。けれど一部だけコピーすると前後の文脈が消え、ノートに移す作業は思考を中断させ、数日後には見つからなくなる。',
-          hypothesis:'ショートカット一つで、質問・出典・時刻まで自動で一緒に保存できれば、人はその場で大切な情報を残せる。整理はあとからでいい。',
-          solution:'macOSツールとして実装。選択してショートカットを押すと文脈ごとWorkbenchへ。あとからBoxで分類し、必要なときだけAIで整理・統合・書き出し。',
+      ja:{problem:'アイデア、書き留めたいこと、AIの回答の大切な数行は毎日生まれる。けれど一つずつ保存先のノートやプロジェクトを決めていては間に合わず、思考も途切れ、数日後には見つからなくなる。',
+          hypothesis:'その場で分類しなくても、ショートカット一つで出典や時刻ごと保存できれば、人は断片をすぐに残せる。分類と整理はあとからでいい。',
+          solution:'macOSツールとして実装。ショートカットを押すと文脈ごとWorkbenchへ。あとからBox（それぞれの保管先やプロジェクト）へ振り分け、必要なときだけAIで整理・統合・書き出し。',
           result:'実際に使えるソフトウェアとして完成。AIとの対話、調べもの、AIコーディングで自分が日常的に使用中。友人からは「すばやい保存と複数件の書き出しで整理の時間が減った」という声。'},
-      en:{problem:'After an AI conversation there are always a few lines worth keeping. Copying them alone loses the context; moving them into notes breaks your train of thought, and days later they are gone.',
-          hypothesis:'If saving took one shortcut and automatically kept the question, source and time, people would keep what matters in the moment and organize it later.',
-          solution:'A macOS tool: select, press a shortcut, and the passage lands in the Workbench with its context. Sort it into Boxes later, and call on AI only when needed to organize, merge and export.',
+      en:{problem:'Ideas, things worth noting and useful lines from AI answers turn up every day. Deciding a notebook or project for each one is too slow or breaks your train of thought, and days later they are gone.',
+          hypothesis:'If saving took one shortcut with no filing decision, and kept the source and time automatically, people would hold on to fragments in the moment and sort them later.',
+          solution:'A macOS tool: press a shortcut and the fragment lands in the Workbench with its context. Later, sort it into Boxes—your separate collections and projects—and call on AI only when needed to organize, merge and export.',
           result:'Working software. I use it heavily in AI chats, research and AI coding; a friend who uses it says quick saving and multi-item export cut down their organizing time.'}
     },
     guild:{
