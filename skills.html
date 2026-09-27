@@ -19,7 +19,7 @@
   <a class="brand" href="index.html">XIN</a>
   <nav class="nav">
     <a href="experience.html" data-copy="navExperience">经历</a>
-    <a href="selected-work.html" data-copy="navWorks">个人作品</a>
+    <a href="selected-work.html" data-copy="navWorks">项目</a>
     <a class="active" href="skills.html" data-copy="navSkills">技能</a>
     <a href="index.html#about" data-copy="navAbout">关于</a>
     <span class="langs" aria-label="Language">
@@ -73,6 +73,8 @@ const en={title:'Skills｜XIN',description:'XIN’s capabilities in product desi
 Object.assign(zh,{title:'技能｜佟心 XIN',navWorks:'作品',navAbout:'关于我',eyebrow:'SKILLS · 能力与项目',heroTitle:'能力与项目',intro:'每项能力都对应我做过的项目，点项目名可以直接看。',tools:'常用工具',evidence:'做过的项目',otherTools:'主要在大学课程和学生项目中使用：Maya、Blender、3ds Max、Adobe Premiere、Python。另接触过 SAP PP / MM 与会计业务。'});zh.rows[0][1]='问卷 · 访谈 · 案例分析';zh.rows=[zh.rows[2],zh.rows[1],zh.rows[0],zh.rows[3],zh.rows[4],zh.rows[5]];
 Object.assign(ja,{navWorks:'作品',eyebrow:'SKILLS · 能力とプロジェクト',heroTitle:'能力とプロジェクト',intro:'すべての能力を実際のプロジェクトと結びつけています。プロジェクト名から詳細を確認できます。',tools:'主なツール',evidence:'プロジェクト',otherTools:'主に大学の授業や学生プロジェクトで使用：Maya、Blender、3ds Max、Adobe Premiere、Python。その他、SAP PP / MMと会計業務の基礎にも触れました。'});ja.rows[0][1]='アンケート · インタビュー · 事例分析';ja.rows=[ja.rows[2],ja.rows[1],ja.rows[0],ja.rows[3],ja.rows[4],ja.rows[5]];
 Object.assign(en,{title:'Skills｜Tong Xin',navWorks:'Work',navAbout:'About me',eyebrow:'SKILLS · CAPABILITIES & PROJECTS',heroTitle:'Capabilities & Projects',intro:'Every capability is connected to work I have completed. Select a project name to view it.',tools:'Primary tools',evidence:'Projects',otherTools:'Primarily used in university courses and student projects: Maya, Blender, 3ds Max, Adobe Premiere, and Python. I also gained foundational exposure to SAP PP / MM and accounting operations.'});en.rows[0][1]='Surveys · interviews · case analysis';en.rows=[en.rows[2],en.rows[1],en.rows[0],en.rows[3],en.rows[4],en.rows[5]];
+// 顶部导航：「作品」改为「项目 / プロジェクト / Projects」
+Object.assign(zh,{navWorks:'项目'});Object.assign(ja,{navWorks:'プロジェクト'});Object.assign(en,{navWorks:'Projects'});
 Object.assign(zh,{intro:'每一项能力，都对应着我做过的项目。点项目名可以直接看。',otherTools:'主要在大学课程和学生项目中使用：Maya、Blender、3ds Max、Adobe Premiere、Python。'});zh.rows[4][0]='故事与文案';zh.rows[5][0]='需求梳理与系统设计';
 const content={zh,ja,en};
 const tbody=document.getElementById('skillRows');

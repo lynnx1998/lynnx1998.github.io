@@ -16,7 +16,7 @@ footer{position:relative;z-index:1;padding:30px 54px;border-top:1px solid var(--
 </style>
 </head>
 <body>
-<header class="top"><a class="brand" href="index.html">XIN</a><nav class="nav"><a href="experience.html" data-t="navExperience">经历</a><a class="active" href="selected-work.html" data-t="navWorks">个人作品</a><a href="skills.html" data-t="navSkills">技能</a><a href="index.html#about" data-t="navAbout">关于</a><span class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></span></nav></header><script src="site-nav.js"></script>
+<header class="top"><a class="brand" href="index.html">XIN</a><nav class="nav"><a href="experience.html" data-t="navExperience">经历</a><a class="active" href="selected-work.html" data-t="navWorks">项目</a><a href="skills.html" data-t="navSkills">技能</a><a href="index.html#about" data-t="navAbout">关于</a><span class="langs"><button class="lang" data-lang="ja">日本語</button><button class="lang active" data-lang="zh">中</button><button class="lang" data-lang="en">EN</button></span></nav></header><script src="site-nav.js"></script>
 <main>
   <a class="back" href="selected-work.html" data-t="back">← 返回精选项目</a>
   <span class="eyebrow">ARCHIVE · MORE WORK</span>
@@ -52,6 +52,8 @@ Object.assign(copy.ja,{intro:'出版物のイラストレーションと、メ�
 Object.assign(copy.en,{intro:'This archive brings together publication illustration and cross-media experiments.',illustrationDesc:'During university, I expanded from comics, character illustration, and graphic design into clay masks, spatial displays, and curatorial work. By taking part in a range of design projects and campus activities, I developed cross-media making experience and a stronger sensitivity to both modes of expression and material detail.',illustrationRole:'University work · Visual and three-dimensional experiments'});
 Object.assign(copy.zh,{intro:'出版物插画、黏土面具、展览，还有大学时做的网页游戏。',publishing:'出版物插画',publishingDesc:'《跟着诗词游中国》一套四册，封面和内页插画由我绘制，把诗词里写到的地方和风物画成一页页场景。',publishingRole:'四册 · 封面与内页插画',illustration:'插画与跨媒介实验',illustrationDesc:'大学时期，我从漫画、角色插画和平面设计出发，也尝试了黏土面具、空间展示、策展与交互网页游戏。这些学生时代的作品记录了我对不同材料和表达方式的探索。'});
 Object.assign(copy.zh,{publishingDesc:'《跟着诗词游中国》一套四册，封面和内页插画由我绘制。诗里写到的地方和风物，被我画成了一页页可以走进去的场景。',illustrationDesc:'大学时除了漫画和人物插画，我也做过平面设计、黏土面具、空间展示，还参与过一次策展。每换一种材料，就得重新想一遍怎么表达——这些尝试让我对材料和细节更敏感。'});
+// 顶部导航：「作品」改为「项目 / プロジェクト / Projects」
+Object.assign(copy.zh,{navWorks:'项目'});Object.assign(copy.ja,{navWorks:'プロジェクト'});Object.assign(copy.en,{navWorks:'Projects'});
 function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{const v=copy[lang][el.dataset.t];if(v)el.textContent=v});document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));localStorage.setItem('tx-lang',lang)}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(localStorage.getItem('tx-lang')||'ja');
 </script>
 </body></html>
